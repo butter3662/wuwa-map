@@ -26,8 +26,18 @@ jobs:
       - name: 크롤러 받기 (Acceleratorer/wuwa-map)
         run: git clone --depth 1 https://github.com/Acceleratorer/wuwa-map /tmp/crawler
 
+      - name: 공식 CDN 연결 확인
+        run: |
+          for u in https://web-static.kurobbs.com/ https://web-static.kurobbs.com/mcmap/tiles/; do
+            r=$(curl -sS -o /dev/null -w '%{http_code} %{remote_ip} %{time_total}s' --max-time 20 -H 'referer: https://www.kurobbs.com/' "$u" 2>&1 || true)
+            echo "::notice::$u -> $r"
+          done
+          echo "::notice::DNS $(getent ahosts web-static.kurobbs.com | head -3 | tr '\n' ' ')"
+
       - name: 공식 지도에서 원본 타일 다운로드
         working-directory: /tmp/crawler
+        env:
+          NODE_OPTIONS: --dns-result-order=ipv4first
         run: |
           set -o pipefail
           node tools/crawl-kuro-map.mjs --tile-size 1024 --output /tmp/kuro --raw-output /tmp/kuro-raw --refresh-tiles true --concurrency 6 2>&1 | tee /tmp/crawl.log || {
