@@ -25,10 +25,17 @@ MAGI(butter3662/MAGI)와 **같은 Supabase 프로젝트**를 쓴다(`config.js`�
 - 체크/해제 후 약 1.5초 뒤 그 지도 행을 저장하고, 페이지를 열거나 다시 화면에 돌아올 때 서버 내용을 받아온다. 같은 지도는 더 나중에 수정한 쪽이 이긴다.
 - 어떤 기기에서 처음 로그인할 때는 그 기기에 있던 체크와 계정의 체크를 **합친다**(지우지 않음).
 
+## 3. 지도 고화질로 바꾸기
+지금 들어 있는 지도 타일은 공식 원본(1024px PNG)을 768px로 줄인 사본이다. 원본으로 바꾸려면:
+1. 저장소 **Actions** 탭 → 왼쪽 **고화질 지도 타일 받기** → **Run workflow**
+2. 10~30분 뒤 끝나면 `pk/` 가 새 타일로 교체되어 자동 커밋되고, Pages 에 반영된다.
+- 공식 지도 타일 배치(격자)가 바뀌어 마커 위치가 어긋날 상황이면 작업이 스스로 중단되고 기존 타일이 유지된다.
+
 ## 구조
 - `index.html`, `app.js`, `app.css`, `config.js`
 - `data/catalog.json`, `data/maps/*.json` : 지도별 카테고리·마커·설명(한국어)
 - `pk/*.webp` + `pk/index.json` : 지도 타일·아이콘을 묶은 파일과 위치 색인
+- `tools/build_tiles.py`, `.github/workflows/hires-tiles.yml` : 원본 타일 받기·묶기
 - `supabase/schema.sql` : Supabase 테이블(`wuwa_progress`)·보안 정책
 
 ## 데이터 출처
