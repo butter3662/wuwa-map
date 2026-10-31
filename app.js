@@ -39,13 +39,16 @@
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const pct = (a, b) => (b ? Math.round((a / b) * 1000) / 10 : 0);
 
-  async function fetchPack(id) {
-    if (state.packCache.has(id)) return state.packCache.get(id);
-    const meta = state.catalog.maps[id];
+  // pack = 같은 지도 이미지를 쓰는 세부 지역들을 합친 데이터. key 또는 세부 지도 id 둘 다 받는다.
+  async function fetchPack(idOrKey) {
+    const key = state.catalog.packs[idOrKey] ? idOrKey : (state.catalog.maps[idOrKey] || {}).pack;
+    if (!key) throw new Error('알 수 없는 지도: ' + idOrKey);
+    if (state.packCache.has(key)) return state.packCache.get(key);
+    const meta = state.catalog.packs[key];
     const res = await fetch(meta.file);
     if (!res.ok) throw new Error('지도 데이터를 불러오지 못했습니다: ' + meta.file);
     const p = await res.json();
-    state.packCache.set(id, p);
+    state.packCache.set(key, p);
     return p;
   }
 
@@ -131,10 +134,31 @@
       state.areaLayer.addLayer(L.tooltip({ permanent: true, direction: 'center', className: 'area-label', interactive: false })
         .setLatLng(ll(c[0], c[1])).setContent(esc(a.n)));
     }
-    if (state.opts.showAreas) state.areaLayer.addTo(map);
-    map.fitBounds(p.view ? boundsLL(p.view) : content, { animate: false });
+    // 멀리서 볼 때 쓸 큰 지역(세부 지도) 이름
+    state.regionLayer = L.layerGroup();
+    for (const m of Object.values(state.catalog.maps)) {
+      if (m.pack !== state.packKey || !m.bounds) continue;
+      const b = m.bounds;
+      state.regionLayer.addLayer(L.tooltip({ permanent: true, direction: 'center', className: 'area-label region-label', interactive: false })
+        .setLatLng(ll((b.minX + b.maxX) / 2, (b.minY + b.maxY) / 2)).setContent(esc(m.title)));
+    }
+    map.on('zoomend', applyZoomStyle);
     map.setMaxBounds(content.pad(0.25));
     map.on('popupclose', () => setHash(null));
+    let mt;
+    map.on('moveend', () => { clearTimeout(mt); mt = setTimeout(() => { renderMarkers(); trackRegion(); }, 120); });
+  }
+
+  // 축소 정도에 따라 마커 크기와 이름 표시를 바꾼다
+  function applyZoomStyle() {
+    const map = state.map; if (!map) return;
+    const z = map.getZoom(); const el = map.getContainer();
+    el.classList.toggle('z-far', z < -1.5);
+    el.classList.toggle('z-mid', z >= -1.5 && z < -0.5);
+    const showFine = state.opts.showAreas && z >= -0.75;
+    const showRegion = state.opts.showAreas && z < -0.75;
+    if (showFine) state.areaLayer.addTo(map); else map.removeLayer(state.areaLayer);
+    if (showRegion) state.regionLayer.addTo(map); else map.removeLayer(state.regionLayer);
   }
 
   function applyFloor() {
@@ -180,7 +204,12 @@
     state.markerLayer.clearLayers();
     state.lmarkers.clear();
     let shown = 0;
+    // 화면 근처 마커만 그린다 (지도 전체 마커를 다 만들면 휴대폰이 버티지 못함)
+    const vb = state.map.getBounds().pad(0.4);
+    const S = vb.getSouth(), N = vb.getNorth(), W = vb.getWest(), E = vb.getEast();
     p.markers.forEach((m, i) => {
+      const lat = state.H - m[3], lng = m[2];
+      if ((lat < S || lat > N || lng < W || lng > E) && state.focusId !== m[0]) return;
       if (!isVisible(m, i)) return;
       const done = state.done.has(m[0]);
       const lm = L.marker(ll(m[2], m[3]), { icon: iconFor(m, done), zIndexOffset: done ? -500 : 0, keyboard: false, riseOnHover: true });
@@ -237,7 +266,7 @@
   function toggleDone(id) {
     const now = !state.done.has(id);
     if (now) state.done.add(id); else state.done.delete(id);
-    saveDone(); touchMap(state.packId);
+    saveDone(); touchMap(state.packKey);
     const lm = state.lmarkers.get(id);
     const p = state.pack;
     const idx = p.markers.findIndex((m) => m[0] === id);
@@ -366,8 +395,9 @@
       for (const g of state.catalog.groups) {
         const per = new Map();
         for (const id of g.maps) {
-          const p = await fetchPack(id);
+          const p = await fetchPack(id); const ai = state.catalog.maps[id].ai;
           for (const m of p.markers) {
+            if (m[6] !== ai) continue;
             const n = p.cats[m[1]].n; if (!isChest(n)) continue;
             for (const tgt of [per, grand]) {
               const v = tgt.get(n) || [0, 0]; v[1]++; if (state.done.has(m[0])) v[0]++; tgt.set(n, v);
@@ -396,7 +426,7 @@
         html += '<div class="pk-maps">';
         for (const id of s.maps) {
           const mm = state.catalog.maps[id]; if (!mm) continue;
-          html += `<button class="pk-map${id === state.packId ? ' cur' : ''}" data-id="${esc(id)}"><div class="t">${esc(mm.title)}</div><div class="s">마커 ${mm.count.toLocaleString()}개</div></button>`;
+          html += `<button class="pk-map${id === state.packId ? ' cur' : ''}" data-id="${esc(id)}"><div class="t">${esc(mm.title)}</div><div class="s">이 지역 마커 ${mm.count.toLocaleString()}개</div></button>`;
         }
         html += '</div>';
       }
@@ -409,24 +439,50 @@
   /* ---------- load ---------- */
   async function loadMap(id, focusMarker) {
     if (!state.catalog.maps[id]) id = state.catalog.defaultMapId;
-    $('#mapTitle').textContent = '불러오는 중…';
-    const p = await fetchPack(id);
-    state.packId = id; state.pack = p; state.floor = ''; state.searchIdx = null; state.focusId = null;
+    const meta = state.catalog.maps[id];
+    const same = state.pack && state.packKey === meta.pack && state.map;
+    if (!same) $('#mapTitle').textContent = '불러오는 중…';
+    const p = await fetchPack(meta.pack);
+    state.packId = id; state.focusId = null;
     LS.set(K.last, id);
-    if (!state.visibleInit) {
-      for (const c of p.cats) if (isChest(c.n)) state.visible.add(c.n);
-      state.visibleInit = true; saveVis();
+    setTitle(meta.title);
+    if (!same) {
+      state.packKey = meta.pack; state.pack = p; state.floor = ''; state.searchIdx = null;
+      if (!state.visibleInit) {
+        for (const c of p.cats) if (isChest(c.n)) state.visible.add(c.n);
+        state.visibleInit = true; saveVis();
+      }
+      computeCounts();
+      buildMap();
+      renderFloors(); applyFloor();
+      renderCatList();
+      if ($('#tab-progress').classList.contains('active')) renderProgressMap();
     }
-    $('#mapTitle').textContent = p.title;
-    document.title = `${p.title} · 명조 지도`;
-    computeCounts();
-    buildMap();
-    renderFloors(); applyFloor();
-    renderCatList();
+    const view = meta.view || meta.bounds || p.bounds;
+    state.suppressTrack = true;
+    state.map.fitBounds(boundsLL(view), { animate: false });
+    applyZoomStyle();
     renderMarkers();
-    if ($('#tab-progress').classList.contains('active')) renderProgressMap();
+    setTimeout(() => { state.suppressTrack = false; }, 400);
     setHash(null);
     if (focusMarker) focus(focusMarker);
+  }
+
+  function setTitle(t) { $('#mapTitle').textContent = t; document.title = `${t} · 명조 지도`; }
+
+  // 지도를 움직이면 화면 가운데가 속한 세부 지역 이름으로 제목을 바꾼다
+  function trackRegion() {
+    if (state.suppressTrack || !state.map) return;
+    const c = state.map.getCenter(); const x = c.lng, y = state.H - c.lat;
+    let best = null, area = Infinity;
+    for (const [id, m] of Object.entries(state.catalog.maps)) {
+      if (m.pack !== state.packKey || !m.bounds) continue;
+      const b = m.bounds;
+      if (x < b.minX || x > b.maxX || y < b.minY || y > b.maxY) continue;
+      const a = (b.maxX - b.minX) * (b.maxY - b.minY);
+      if (a < area) { area = a; best = id; }
+    }
+    if (best && best !== state.packId) { state.packId = best; LS.set(K.last, best); setTitle(state.catalog.maps[best].title); setHash(null); }
   }
 
   function focus(markerId) {
@@ -434,9 +490,9 @@
     if (!m) return;
     state.focusId = markerId;
     if (state.floor && m[4] !== state.floor) { state.floor = ''; $('#floorSelect').value = ''; applyFloor(); }
+    state.map.setView(ll(m[2], m[3]), 1, { animate: false });
     renderMarkers();
     const lm = state.lmarkers.get(markerId);
-    state.map.setView(ll(m[2], m[3]), 1, { animate: false });
     if (lm) { lm.unbindPopup(); lm.bindPopup(popupEl(m), { maxWidth: 320 }).openPopup(); setHash(m[0]); }
   }
 
@@ -472,7 +528,7 @@
     const sa = $('#showAreas'); sa.checked = state.opts.showAreas;
     sa.addEventListener('change', () => {
       state.opts.showAreas = sa.checked; saveOpts();
-      if (sa.checked) state.areaLayer.addTo(state.map); else state.map.removeLayer(state.areaLayer);
+      applyZoomStyle();
     });
     const q = $('#btnQuick'); q.setAttribute('aria-pressed', state.opts.quick);
     q.addEventListener('click', () => {
@@ -631,7 +687,12 @@
         const merge = first && !LS.get(mergedKey, false);
         let changed = 0; const seen = new Set();
         for (const d of docs) {
-          if (!state.catalog.maps[d.mapId]) continue;
+          if (!state.catalog.packs[d.mapId]) {
+            // 예전 형식(세부 지도별) 기록: 지우지 않고 합쳐서 새 형식으로 옮긴다
+            const old = state.catalog.maps[d.mapId];
+            if (old) { let add = 0; for (const id of d.ids || []) if (!state.done.has(id)) { state.done.add(id); add++; } changed += add; mtimes[old.pack] = Date.now(); this.schedule(old.pack, 50); if ((d.ids || []).length) be.put(d.mapId, [], Date.now()).catch(() => {}); }
+            continue;
+          }
           seen.add(d.mapId);
           const rt = d.t || 0, lt = mtimes[d.mapId] || 0;
           if (merge || rt > lt) {
@@ -643,7 +704,7 @@
             if (merge) { mtimes[d.mapId] = Date.now(); this.schedule(d.mapId, 50); } else mtimes[d.mapId] = rt;
           } else if (lt > rt) this.schedule(d.mapId, 50);
         }
-        for (const mapId of Object.keys(mtimes)) if (!seen.has(mapId) && state.catalog.maps[mapId]) this.schedule(mapId, 50);
+        for (const mapId of Object.keys(mtimes)) if (!seen.has(mapId) && state.catalog.packs[mapId]) this.schedule(mapId, 50);
         if (merge) LS.set(mergedKey, true);
         LS.set('wuwa-ko:mtimes', mtimes);
         if (changed) { saveDone(); computeCounts(); renderCatList(); renderMarkers(); if ($('#tab-progress').classList.contains('active')) renderProgressMap(); toast(`다른 기기의 진행도 ${changed}건을 반영했습니다`); }
@@ -673,10 +734,10 @@
     },
     async pushAll() {
       const now = Date.now();
-      for (const id of Object.keys(state.catalog.maps)) mtimes[id] = now;
+      for (const id of Object.keys(state.catalog.packs)) mtimes[id] = now;
       LS.set('wuwa-ko:mtimes', mtimes);
       if (!this.be) return;
-      for (const id of Object.keys(state.catalog.maps)) await this.push(id);
+      for (const id of Object.keys(state.catalog.packs)) await this.push(id);
     },
   };
   function setSyncLine(t) { const el = $('#syncLine'); if (el) el.textContent = t; }

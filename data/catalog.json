@@ -171,265 +171,979 @@
  "maps": {
   "wuwa-kuro-state-906": {
    "title": "에칭 평원",
-   "file": "data/maps/state-906.json",
+   "pack": "m906",
+   "ai": 0,
+   "view": {
+    "minX": 4425.486999999999,
+    "minY": 3128.922,
+    "maxX": 6824.602000000001,
+    "maxY": 5497.073
+   },
+   "bounds": {
+    "minX": 3072,
+    "minY": 2304,
+    "maxX": 7680,
+    "maxY": 6912
+   },
    "count": 394
-  },
-  "wuwa-kuro-state-8-country-4": {
-   "title": "빙원 운송 항구",
-   "file": "data/maps/state-8-country-4.json",
-   "count": 91
-  },
-  "wuwa-kuro-atlas-roya-frostlands-8-6-2": {
-   "title": "기알라르 산",
-   "file": "data/maps/atlas-roya-frostlands-8-6-2.json",
-   "count": 135
-  },
-  "wuwa-kuro-atlas-roya-frostlands-8-6-3": {
-   "title": "눈먼 추락지",
-   "file": "data/maps/atlas-roya-frostlands-8-6-3.json",
-   "count": 159
-  },
-  "wuwa-kuro-atlas-roya-frostlands-8-6-4": {
-   "title": "옛 밀림 유적지",
-   "file": "data/maps/atlas-roya-frostlands-8-6-4.json",
-   "count": 430
-  },
-  "wuwa-kuro-atlas-roya-frostlands-8-6-5": {
-   "title": "타이드로스트 숲",
-   "file": "data/maps/atlas-roya-frostlands-8-6-5.json",
-   "count": 345
-  },
-  "wuwa-kuro-state-909": {
-   "title": "석양의 섬",
-   "file": "data/maps/state-909.json",
-   "count": 161
   },
   "wuwa-kuro-atlas-roya-frostlands-906-5-7": {
    "title": "스타토치 아카데미",
-   "file": "data/maps/atlas-roya-frostlands-906-5-7.json",
+   "pack": "m906",
+   "ai": 1,
+   "view": {
+    "minX": 3982.4590000000003,
+    "minY": 3865.2990000000004,
+    "maxX": 5915.407,
+    "maxY": 6382.740000000001
+   },
+   "bounds": {
+    "minX": 3072,
+    "minY": 3072,
+    "maxX": 6912,
+    "maxY": 7680
+   },
    "count": 470
-  },
-  "wuwa-kuro-atlas-roya-frostlands-909-7-7": {
-   "title": "봉인된 땅",
-   "file": "data/maps/atlas-roya-frostlands-909-7-7.json",
-   "count": 201
   },
   "wuwa-kuro-atlas-roya-frostlands-906-5-8": {
    "title": "연동 중추",
-   "file": "data/maps/atlas-roya-frostlands-906-5-8.json",
+   "pack": "m906",
+   "ai": 2,
+   "view": {
+    "minX": 2306.7110000000002,
+    "minY": 1818.8049999999998,
+    "maxX": 3739.708,
+    "maxY": 2875.717
+   },
+   "bounds": {
+    "minX": 1536,
+    "minY": 768,
+    "maxX": 4608,
+    "maxY": 3840
+   },
    "count": 37
-  },
-  "wuwa-kuro-atlas-roya-frostlands-909-7-8": {
-   "title": "적막의 절벽",
-   "file": "data/maps/atlas-roya-frostlands-909-7-8.json",
-   "count": 143
   },
   "wuwa-kuro-atlas-roya-frostlands-906-5-9": {
    "title": "팡스파이어 골짜기",
-   "file": "data/maps/atlas-roya-frostlands-906-5-9.json",
+   "pack": "m906",
+   "ai": 3,
+   "view": {
+    "minX": 3285.233,
+    "minY": 1604.6680000000001,
+    "maxX": 6453.911,
+    "maxY": 4427.421
+   },
+   "bounds": {
+    "minX": 2304,
+    "minY": 768,
+    "maxX": 7680,
+    "maxY": 5376
+   },
    "count": 448
-  },
-  "wuwa-kuro-atlas-roya-frostlands-909-7-9": {
-   "title": "영원한 어둠의 평원",
-   "file": "data/maps/atlas-roya-frostlands-909-7-9.json",
-   "count": 197
   },
   "wuwa-kuro-atlas-roya-frostlands-906-5-10": {
    "title": "비야토르 숲",
-   "file": "data/maps/atlas-roya-frostlands-906-5-10.json",
+   "pack": "m906",
+   "ai": 4,
+   "view": {
+    "minX": 519.837,
+    "minY": 3315.049,
+    "maxX": 2985.541,
+    "maxY": 4882.673000000001
+   },
+   "bounds": {
+    "minX": 0,
+    "minY": 2304,
+    "maxX": 3840,
+    "maxY": 6144
+   },
    "count": 280
   },
   "wuwa-kuro-atlas-roya-frostlands-906-5-11": {
    "title": "스테그넌트 런",
-   "file": "data/maps/atlas-roya-frostlands-906-5-11.json",
+   "pack": "m906",
+   "ai": 5,
+   "view": {
+    "minX": 2402.882,
+    "minY": 4632.3949999999995,
+    "maxX": 4937.96,
+    "maxY": 6596.668000000001
+   },
+   "bounds": {
+    "minX": 1536,
+    "minY": 3840,
+    "maxX": 6144,
+    "maxY": 7680
+   },
    "count": 250
   },
   "wuwa-kuro-atlas-roya-frostlands-906-5-12": {
    "title": "리버스 고원",
-   "file": "data/maps/atlas-roya-frostlands-906-5-12.json",
+   "pack": "m906",
+   "ai": 6,
+   "view": {
+    "minX": 2387.866,
+    "minY": 2993.339,
+    "maxX": 4972.122,
+    "maxY": 5529.9980000000005
+   },
+   "bounds": {
+    "minX": 1536,
+    "minY": 1536,
+    "maxX": 6144,
+    "maxY": 6912
+   },
    "count": 204
   },
   "wuwa-kuro-atlas-roya-frostlands-906-5-13": {
    "title": "모버로우 사막",
-   "file": "data/maps/atlas-roya-frostlands-906-5-13.json",
+   "pack": "m906",
+   "ai": 7,
+   "view": {
+    "minX": 4238.455999999999,
+    "minY": 5528.696,
+    "maxX": 6350.005,
+    "maxY": 6723.352000000001
+   },
+   "bounds": {
+    "minX": 3072,
+    "minY": 4608,
+    "maxX": 7680,
+    "maxY": 7680
+   },
    "count": 113
   },
   "wuwa-kuro-atlas-roya-frostlands-906-5-14": {
    "title": "자이언트 게이즈 · 평야",
-   "file": "data/maps/atlas-roya-frostlands-906-5-14.json",
+   "pack": "m906",
+   "ai": 8,
+   "view": {
+    "minX": 5225.625999999999,
+    "minY": 4294.474999999999,
+    "maxX": 7227.332,
+    "maxY": 6761.111000000001
+   },
+   "bounds": {
+    "minX": 3840,
+    "minY": 3072,
+    "maxX": 8448,
+    "maxY": 7680
+   },
    "count": 335
+  },
+  "wuwa-kuro-state-8-country-4": {
+   "title": "빙원 운송 항구",
+   "pack": "m8",
+   "ai": 0,
+   "view": {
+    "minX": 3548.088,
+    "minY": 5029.044999999999,
+    "maxX": 10576.172999999999,
+    "maxY": 10129.467999999999
+   },
+   "bounds": {
+    "minX": 2304,
+    "minY": 3840,
+    "maxX": 11520,
+    "maxY": 11520
+   },
+   "count": 91
+  },
+  "wuwa-kuro-atlas-roya-frostlands-8-6-2": {
+   "title": "기알라르 산",
+   "pack": "m8",
+   "ai": 1,
+   "view": {
+    "minX": 8566.362000000001,
+    "minY": 3210.2400000000002,
+    "maxX": 10425.483,
+    "maxY": 5714.5160000000005
+   },
+   "bounds": {
+    "minX": 7680,
+    "minY": 2304,
+    "maxX": 11520,
+    "maxY": 6912
+   },
+   "count": 135
+  },
+  "wuwa-kuro-atlas-roya-frostlands-8-6-3": {
+   "title": "눈먼 추락지",
+   "pack": "m8",
+   "ai": 2,
+   "view": {
+    "minX": 7244.371999999999,
+    "minY": 3548.576,
+    "maxX": 9375.925,
+    "maxY": 5778.071000000001
+   },
+   "bounds": {
+    "minX": 6144,
+    "minY": 2304,
+    "maxX": 10752,
+    "maxY": 6912
+   },
+   "count": 159
+  },
+  "wuwa-kuro-atlas-roya-frostlands-8-6-4": {
+   "title": "옛 밀림 유적지",
+   "pack": "m8",
+   "ai": 3,
+   "view": {
+    "minX": 9548.571,
+    "minY": 3137.054,
+    "maxX": 11363.572,
+    "maxY": 5625.311000000001
+   },
+   "bounds": {
+    "minX": 8448,
+    "minY": 2304,
+    "maxX": 12288,
+    "maxY": 6912
+   },
+   "count": 430
+  },
+  "wuwa-kuro-atlas-roya-frostlands-8-6-5": {
+   "title": "타이드로스트 숲",
+   "pack": "m8",
+   "ai": 4,
+   "view": {
+    "minX": 7686.035999999999,
+    "minY": 2158.821,
+    "maxX": 10258.672999999999,
+    "maxY": 4243.2
+   },
+   "bounds": {
+    "minX": 6912,
+    "minY": 768,
+    "maxX": 11520,
+    "maxY": 5376
+   },
+   "count": 345
   },
   "wuwa-kuro-state-8-country-3": {
    "title": "라군나 성",
-   "file": "data/maps/state-8-country-3.json",
+   "pack": "m8",
+   "ai": 5,
+   "view": {
+    "minX": 15629.252,
+    "minY": 15391.624,
+    "maxX": 17174.269,
+    "maxY": 16723.823
+   },
+   "bounds": {
+    "minX": 14592,
+    "minY": 14592,
+    "maxX": 18432,
+    "maxY": 17664
+   },
    "count": 119
   },
   "wuwa-kuro-atlas-rinascita-8-3-2": {
    "title": "아베라르도 금고",
-   "file": "data/maps/atlas-rinascita-8-3-2.json",
+   "pack": "m8",
+   "ai": 6,
+   "view": {
+    "minX": 17530.990999999998,
+    "minY": 15676.922,
+    "maxX": 19048.207000000002,
+    "maxY": 17781.034
+   },
+   "bounds": {
+    "minX": 16128,
+    "minY": 14592,
+    "maxX": 19968,
+    "maxY": 19200
+   },
    "count": 893
   },
   "wuwa-kuro-atlas-rinascita-8-3-3": {
    "title": "탄식 무덤의 섬",
-   "file": "data/maps/atlas-rinascita-8-3-3.json",
+   "pack": "m8",
+   "ai": 7,
+   "view": {
+    "minX": 16656.565,
+    "minY": 14099.576000000001,
+    "maxX": 18385.920000000002,
+    "maxY": 15938.259
+   },
+   "bounds": {
+    "minX": 15360,
+    "minY": 13056,
+    "maxX": 19200,
+    "maxY": 16896
+   },
    "count": 470
   },
   "wuwa-kuro-atlas-rinascita-8-3-4": {
    "title": "애도 성역",
-   "file": "data/maps/atlas-rinascita-8-3-4.json",
+   "pack": "m8",
+   "ai": 8,
+   "view": {
+    "minX": 16815.586,
+    "minY": 15202.786,
+    "maxX": 18366.946,
+    "maxY": 16422.234
+   },
+   "bounds": {
+    "minX": 15360,
+    "minY": 13824,
+    "maxX": 19200,
+    "maxY": 17664
+   },
    "count": 571
   },
   "wuwa-kuro-atlas-rinascita-8-3-5": {
    "title": "바람 부는 물가",
-   "file": "data/maps/atlas-rinascita-8-3-5.json",
+   "pack": "m8",
+   "ai": 9,
+   "view": {
+    "minX": 15608.471000000001,
+    "minY": 14453.76,
+    "maxX": 17462.829,
+    "maxY": 16589.704
+   },
+   "bounds": {
+    "minX": 14592,
+    "minY": 13056,
+    "maxX": 18432,
+    "maxY": 17664
+   },
    "count": 511
   },
   "wuwa-kuro-atlas-rinascita-8-3-6": {
    "title": "물의 경지",
-   "file": "data/maps/atlas-rinascita-8-3-6.json",
+   "pack": "m8",
+   "ai": 10,
+   "view": {
+    "minX": 16596.931999999997,
+    "minY": 15680.753,
+    "maxX": 18208.169,
+    "maxY": 17109.233
+   },
+   "bounds": {
+    "minX": 15360,
+    "minY": 14592,
+    "maxX": 19200,
+    "maxY": 18432
+   },
    "count": 647
   },
   "wuwa-kuro-atlas-rinascita-8-3-7": {
    "title": "미슬토 반도",
-   "file": "data/maps/atlas-rinascita-8-3-7.json",
+   "pack": "m8",
+   "ai": 11,
+   "view": {
+    "minX": 17594.428,
+    "minY": 14416.435000000001,
+    "maxX": 19018.391,
+    "maxY": 16310.124
+   },
+   "bounds": {
+    "minX": 16128,
+    "minY": 13056,
+    "maxX": 19968,
+    "maxY": 17664
+   },
    "count": 587
   },
   "wuwa-kuro-atlas-rinascita-8-3-8": {
    "title": "테살레오 해저 산맥",
-   "file": "data/maps/atlas-rinascita-8-3-8.json",
+   "pack": "m8",
+   "ai": 12,
+   "view": {
+    "minX": 16384.602,
+    "minY": 16022.287,
+    "maxX": 18212.442000000003,
+    "maxY": 17641.83
+   },
+   "bounds": {
+    "minX": 15360,
+    "minY": 14592,
+    "maxX": 19200,
+    "maxY": 18432
+   },
    "count": 665
-  },
-  "wuwa-kuro-state-902": {
-   "title": "금고 아래층",
-   "file": "data/maps/state-902.json",
-   "count": 231
   },
   "wuwa-kuro-atlas-rinascita-8-3-10": {
    "title": "리졸리 군도",
-   "file": "data/maps/atlas-rinascita-8-3-10.json",
+   "pack": "m8",
+   "ai": 13,
+   "view": {
+    "minX": 10070.441,
+    "minY": 4313.477,
+    "maxX": 17166.056,
+    "maxY": 15127.792999999998
+   },
+   "bounds": {
+    "minX": 9216,
+    "minY": 3072,
+    "maxX": 18432,
+    "maxY": 16128
+   },
    "count": 336
-  },
-  "wuwa-kuro-state-903": {
-   "title": "아비놀륨",
-   "file": "data/maps/state-903.json",
-   "count": 454
   },
   "wuwa-kuro-atlas-rinascita-8-3-12": {
    "title": "베오 해역",
-   "file": "data/maps/atlas-rinascita-8-3-12.json",
+   "pack": "m8",
+   "ai": 14,
+   "view": {
+    "minX": 17793.204999999998,
+    "minY": 16906.21,
+    "maxX": 20287.849000000002,
+    "maxY": 19602.974000000002
+   },
+   "bounds": {
+    "minX": 16896,
+    "minY": 16128,
+    "maxX": 21504,
+    "maxY": 20736
+   },
    "count": 811
   },
   "wuwa-kuro-atlas-rinascita-8-4-13": {
    "title": "일곱 언덕",
-   "file": "data/maps/atlas-rinascita-8-4-13.json",
+   "pack": "m8",
+   "ai": 15,
+   "view": {
+    "minX": 19322.879999999997,
+    "minY": 19732.702999999998,
+    "maxX": 22717.440000000002,
+    "maxY": 22209.656000000003
+   },
+   "bounds": {
+    "minX": 18432,
+    "minY": 18432,
+    "maxX": 23040,
+    "maxY": 23040
+   },
    "count": 888
-  },
-  "wuwa-kuro-state-905": {
-   "title": "깊은 바다 실험장",
-   "file": "data/maps/state-905.json",
-   "count": 236
   },
   "wuwa-kuro-atlas-rinascita-8-4-15": {
    "title": "상귀스 사냥 평원",
-   "file": "data/maps/atlas-rinascita-8-4-15.json",
+   "pack": "m8",
+   "ai": 16,
+   "view": {
+    "minX": 19391.548,
+    "minY": 21899.746,
+    "maxX": 21507.614,
+    "maxY": 23808
+   },
+   "bounds": {
+    "minX": 18432,
+    "minY": 20736,
+    "maxX": 23040,
+    "maxY": 23808
+   },
    "count": 455
   },
   "wuwa-kuro-state-8-country-900": {
    "title": "검은 해안 군도",
-   "file": "data/maps/state-8-country-900.json",
+   "pack": "m8",
+   "ai": 17,
+   "view": {
+    "minX": 12199.165,
+    "minY": 11098.052,
+    "maxX": 13348.002999999999,
+    "maxY": 12430.187
+   },
+   "bounds": {
+    "minX": 10752,
+    "minY": 9984,
+    "maxX": 14592,
+    "maxY": 13824
+   },
    "count": 352
-  },
-  "wuwa-kuro-state-900": {
-   "title": "테티스 지하",
-   "file": "data/maps/state-900.json",
-   "count": 415
-  },
-  "wuwa-kuro-state-910": {
-   "title": "시간의 폐허",
-   "file": "data/maps/state-910.json",
-   "count": 59
   },
   "wuwa-kuro-atlas-huanglong-8-1-1": {
    "title": "운릉 협곡",
-   "file": "data/maps/atlas-huanglong-8-1-1.json",
+   "pack": "m8",
+   "ai": 18,
+   "view": {
+    "minX": 8230.896,
+    "minY": 10507.271,
+    "maxX": 9532.109999999999,
+    "maxY": 12251.425
+   },
+   "bounds": {
+    "minX": 6912,
+    "minY": 9216,
+    "maxX": 10752,
+    "maxY": 13056
+   },
    "count": 683
   },
   "wuwa-kuro-state-8-country-1": {
    "title": "금주성",
-   "file": "data/maps/state-8-country-1.json",
+   "pack": "m8",
+   "ai": 19,
+   "view": {
+    "minX": 8716.538,
+    "minY": 10926.688,
+    "maxX": 10817.189999999999,
+    "maxY": 12372.028
+   },
+   "bounds": {
+    "minX": 7680,
+    "minY": 9984,
+    "maxX": 12288,
+    "maxY": 13824
+   },
    "count": 669
   },
   "wuwa-kuro-atlas-huanglong-8-1-3": {
    "title": "중부 평원",
-   "file": "data/maps/atlas-huanglong-8-1-3.json",
+   "pack": "m8",
+   "ai": 20,
+   "view": {
+    "minX": 8797.097,
+    "minY": 10579.878,
+    "maxX": 10446.607,
+    "maxY": 12086.270999999999
+   },
+   "bounds": {
+    "minX": 7680,
+    "minY": 9216,
+    "maxX": 11520,
+    "maxY": 13056
+   },
    "count": 777
   },
   "wuwa-kuro-atlas-huanglong-8-1-4": {
    "title": "잡석 고지",
-   "file": "data/maps/atlas-huanglong-8-1-4.json",
+   "pack": "m8",
+   "ai": 21,
+   "view": {
+    "minX": 8871.981,
+    "minY": 9707.007,
+    "maxX": 10711.919,
+    "maxY": 11409.769
+   },
+   "bounds": {
+    "minX": 7680,
+    "minY": 8448,
+    "maxX": 11520,
+    "maxY": 12288
+   },
    "count": 986
   },
   "wuwa-kuro-atlas-huanglong-8-1-5": {
    "title": "호환 산맥",
-   "file": "data/maps/atlas-huanglong-8-1-5.json",
+   "pack": "m8",
+   "ai": 22,
+   "view": {
+    "minX": 8849.619,
+    "minY": 11700.605000000001,
+    "maxX": 10326.438,
+    "maxY": 13157.195
+   },
+   "bounds": {
+    "minX": 7680,
+    "minY": 10752,
+    "maxX": 11520,
+    "maxY": 14592
+   },
    "count": 747
   },
   "wuwa-kuro-atlas-huanglong-8-1-6": {
    "title": "울음새 늪",
-   "file": "data/maps/atlas-huanglong-8-1-6.json",
+   "pack": "m8",
+   "ai": 23,
+   "view": {
+    "minX": 9679.664,
+    "minY": 12456.560000000001,
+    "maxX": 11351.681999999999,
+    "maxY": 14225.818
+   },
+   "bounds": {
+    "minX": 8448,
+    "minY": 11520,
+    "maxX": 12288,
+    "maxY": 15360
+   },
    "count": 993
   },
   "wuwa-kuro-atlas-huanglong-8-1-7": {
    "title": "암흑 밀림",
-   "file": "data/maps/atlas-huanglong-8-1-7.json",
+   "pack": "m8",
+   "ai": 24,
+   "view": {
+    "minX": 8619.671,
+    "minY": 12438.857,
+    "maxX": 10321.92,
+    "maxY": 14136.621
+   },
+   "bounds": {
+    "minX": 7680,
+    "minY": 11520,
+    "maxX": 11520,
+    "maxY": 15360
+   },
    "count": 1113
   },
   "wuwa-kuro-atlas-huanglong-8-1-8": {
    "title": "귀허항시",
-   "file": "data/maps/atlas-huanglong-8-1-8.json",
+   "pack": "m8",
+   "ai": 25,
+   "view": {
+    "minX": 8175.133999999999,
+    "minY": 11613.685000000001,
+    "maxX": 9604.628999999999,
+    "maxY": 13532.16
+   },
+   "bounds": {
+    "minX": 6912,
+    "minY": 10752,
+    "maxX": 10752,
+    "maxY": 14592
+   },
    "count": 736
   },
   "wuwa-kuro-atlas-huanglong-8-1-9": {
    "title": "어둠의 만",
-   "file": "data/maps/atlas-huanglong-8-1-9.json",
+   "pack": "m8",
+   "ai": 26,
+   "view": {
+    "minX": 9616.905,
+    "minY": 11225.449,
+    "maxX": 10858.616,
+    "maxY": 13137.688
+   },
+   "bounds": {
+    "minX": 8448,
+    "minY": 9984,
+    "maxX": 12288,
+    "maxY": 14592
+   },
    "count": 207
   },
   "wuwa-kuro-atlas-huanglong-8-1-10": {
    "title": "북락 광야",
-   "file": "data/maps/atlas-huanglong-8-1-10.json",
+   "pack": "m8",
+   "ai": 27,
+   "view": {
+    "minX": 7243.630999999999,
+    "minY": 2157.42,
+    "maxX": 11385.916,
+    "maxY": 10626.842999999999
+   },
+   "bounds": {
+    "minX": 6144,
+    "minY": 768,
+    "maxX": 12288,
+    "maxY": 11520
+   },
    "count": 888
   },
   "wuwa-kuro-atlas-huanglong-8-1-11": {
    "title": "승소산",
-   "file": "data/maps/atlas-huanglong-8-1-11.json",
+   "pack": "m8",
+   "ai": 28,
+   "view": {
+    "minX": 11094.167000000001,
+    "minY": 11494.511,
+    "maxX": 21357.294,
+    "maxY": 23808
+   },
+   "bounds": {
+    "minX": 9984,
+    "minY": 9984,
+    "maxX": 22272,
+    "maxY": 23808
+   },
    "count": 1436
   },
   "wuwa-kuro-state-8-country-1-2": {
    "title": "현방성",
-   "file": "data/maps/state-8-country-1-2.json",
+   "pack": "m8",
+   "ai": 29,
+   "view": {
+    "minX": 2856.463,
+    "minY": 9286.475,
+    "maxX": 4511.982,
+    "maxY": 10662.551
+   },
+   "bounds": {
+    "minX": 1536,
+    "minY": 8448,
+    "maxX": 5376,
+    "maxY": 11520
+   },
    "count": 160
   },
   "wuwa-kuro-atlas-huanglong-8-8-13": {
    "title": "방경서봉",
-   "file": "data/maps/atlas-huanglong-8-8-13.json",
+   "pack": "m8",
+   "ai": 30,
+   "view": {
+    "minX": 1624.871,
+    "minY": 9871.059000000001,
+    "maxX": 3512.019,
+    "maxY": 11379.048999999999
+   },
+   "bounds": {
+    "minX": 768,
+    "minY": 8448,
+    "maxX": 4608,
+    "maxY": 12288
+   },
    "count": 280
   },
   "wuwa-kuro-atlas-huanglong-8-8-14": {
    "title": "낙연남구",
-   "file": "data/maps/atlas-huanglong-8-8-14.json",
+   "pack": "m8",
+   "ai": 31,
+   "view": {
+    "minX": 2836.179,
+    "minY": 9991.228000000001,
+    "maxX": 4636.9130000000005,
+    "maxY": 11618.322
+   },
+   "bounds": {
+    "minX": 1536,
+    "minY": 9216,
+    "maxX": 6144,
+    "maxY": 13056
+   },
    "count": 600
   },
   "wuwa-kuro-atlas-huanglong-8-8-15": {
    "title": "현유동악",
-   "file": "data/maps/atlas-huanglong-8-8-15.json",
+   "pack": "m8",
+   "ai": 32,
+   "view": {
+    "minX": 3711.699,
+    "minY": 9380.442000000001,
+    "maxX": 5177.224,
+    "maxY": 11190.212
+   },
+   "bounds": {
+    "minX": 2304,
+    "minY": 8448,
+    "maxX": 6144,
+    "maxY": 12288
+   },
    "count": 446
+  },
+  "wuwa-kuro-state-909": {
+   "title": "석양의 섬",
+   "pack": "m909",
+   "ai": 0,
+   "view": {
+    "minX": 1668.819,
+    "minY": 1445.548,
+    "maxX": 3569.845,
+    "maxY": 2943.554
+   },
+   "bounds": {
+    "minX": 768,
+    "minY": 0,
+    "maxX": 3840,
+    "maxY": 3840
+   },
+   "count": 161
+  },
+  "wuwa-kuro-atlas-roya-frostlands-909-7-7": {
+   "title": "봉인된 땅",
+   "pack": "m909",
+   "ai": 1,
+   "view": {
+    "minX": 700.931,
+    "minY": 1323.707,
+    "maxX": 2297.621,
+    "maxY": 3020.743
+   },
+   "bounds": {
+    "minX": 0,
+    "minY": 0,
+    "maxX": 3072,
+    "maxY": 3840
+   },
+   "count": 201
+  },
+  "wuwa-kuro-atlas-roya-frostlands-909-7-8": {
+   "title": "적막의 절벽",
+   "pack": "m909",
+   "ai": 2,
+   "view": {
+    "minX": 662.6389999999999,
+    "minY": 410.20199999999994,
+    "maxX": 2226.26,
+    "maxY": 1898.315
+   },
+   "bounds": {
+    "minX": 0,
+    "minY": 0,
+    "maxX": 3072,
+    "maxY": 3072
+   },
+   "count": 143
+  },
+  "wuwa-kuro-atlas-roya-frostlands-909-7-9": {
+   "title": "영원한 어둠의 평원",
+   "pack": "m909",
+   "ai": 3,
+   "view": {
+    "minX": 1606.701,
+    "minY": 475.52799999999996,
+    "maxX": 3017.129,
+    "maxY": 2005.835
+   },
+   "bounds": {
+    "minX": 768,
+    "minY": 0,
+    "maxX": 3840,
+    "maxY": 3072
+   },
+   "count": 197
+  },
+  "wuwa-kuro-state-902": {
+   "title": "금고 아래층",
+   "pack": "m902",
+   "ai": 0,
+   "view": {
+    "minX": 539.9580000000001,
+    "minY": 0,
+    "maxX": 2069.082,
+    "maxY": 1901.315
+   },
+   "bounds": {
+    "minX": 0,
+    "minY": 0,
+    "maxX": 2304,
+    "maxY": 2304
+   },
+   "count": 231
+  },
+  "wuwa-kuro-state-903": {
+   "title": "아비놀륨",
+   "pack": "m903",
+   "ai": 0,
+   "view": {
+    "minX": 1058.0330000000001,
+    "minY": 1047.191,
+    "maxX": 3537.318,
+    "maxY": 3584.3009999999995
+   },
+   "bounds": {
+    "minX": 0,
+    "minY": 0,
+    "maxX": 4608,
+    "maxY": 4608
+   },
+   "count": 454
+  },
+  "wuwa-kuro-state-905": {
+   "title": "깊은 바다 실험장",
+   "pack": "m905",
+   "ai": 0,
+   "view": {
+    "minX": 1705.864,
+    "minY": 2804.555,
+    "maxX": 9099.445,
+    "maxY": 7634.046
+   },
+   "bounds": {
+    "minX": 768,
+    "minY": 1536,
+    "maxX": 9984,
+    "maxY": 8448
+   },
+   "count": 236
+  },
+  "wuwa-kuro-state-900": {
+   "title": "테티스 지하",
+   "pack": "m900",
+   "ai": 0,
+   "view": {
+    "minX": 1389.3300000000002,
+    "minY": 1213.991,
+    "maxX": 3681.8819999999996,
+    "maxY": 3033.645
+   },
+   "bounds": {
+    "minX": 0,
+    "minY": 0,
+    "maxX": 3840,
+    "maxY": 3840
+   },
+   "count": 415
+  },
+  "wuwa-kuro-state-910": {
+   "title": "시간의 폐허",
+   "pack": "m910",
+   "ai": 0,
+   "view": {
+    "minX": 352.37600000000003,
+    "minY": 346.955,
+    "maxX": 1248.678,
+    "maxY": 1153.807
+   },
+   "bounds": {
+    "minX": 0,
+    "minY": 0,
+    "maxX": 1536,
+    "maxY": 1536
+   },
+   "count": 59
   },
   "wuwa-kuro-atlas-huanglong-912-8-16": {
    "title": "몽추천라",
-   "file": "data/maps/atlas-huanglong-912-8-16.json",
+   "pack": "m912",
+   "ai": 0,
+   "view": {
+    "minX": 3677.527,
+    "minY": 5218.785999999999,
+    "maxX": 5423.101000000001,
+    "maxY": 7050.845
+   },
+   "bounds": {
+    "minX": 2304,
+    "minY": 3840,
+    "maxX": 6912,
+    "maxY": 8448
+   },
    "count": 276
   }
  },
  "defaultMapId": "wuwa-kuro-state-906",
- "retrieved": "2026-10-22"
+ "retrieved": "2026-10-22",
+ "packs": {
+  "m906": {
+   "file": "data/packs/m906.json",
+   "count": 2531
+  },
+  "m8": {
+   "file": "data/packs/m8.json",
+   "count": 19186
+  },
+  "m909": {
+   "file": "data/packs/m909.json",
+   "count": 702
+  },
+  "m902": {
+   "file": "data/packs/m902.json",
+   "count": 231
+  },
+  "m903": {
+   "file": "data/packs/m903.json",
+   "count": 454
+  },
+  "m905": {
+   "file": "data/packs/m905.json",
+   "count": 236
+  },
+  "m900": {
+   "file": "data/packs/m900.json",
+   "count": 415
+  },
+  "m910": {
+   "file": "data/packs/m910.json",
+   "count": 59
+  },
+  "m912": {
+   "file": "data/packs/m912.json",
+   "count": 276
+  }
+ }
 }
