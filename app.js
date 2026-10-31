@@ -206,6 +206,58 @@
     return state.visible.has(p.cats[m[1]].n);
   }
 
+  /* ---------- 마커 묶음: 거의 같은 자리에 겹친 보물상자(도전 보상 등)를 하나로 ---------- */
+  const CHEST_RANK = { qzx_04: 4, qzx_03: 3, qzx_02: 2, qzx_01: 1 };
+  // 지도 좌표 기준으로 MERGE_R 안에 겹친 보물상자, 또는 MERGE_R2 안에 있으면서 설명이 같은 보물상자(같은 도전·같은 공략 보상)를 하나로 묶는다
+  const MERGE_R = 8, MERGE_R2 = 24;
+  function buildUnits() {
+    const p = state.pack;
+    if (p._units) { state.units = p._units; state.unitOf = p._unitOf; return; }
+    const rank = (i) => CHEST_RANK[p.cats[p.markers[i][1]].id] || 0;
+    const chest = []; p.markers.forEach((m, i) => { if (rank(i)) chest.push(i); });
+    const parent = new Map(chest.map((i) => [i, i]));
+    const find = (i) => { while (parent.get(i) !== i) { parent.set(i, parent.get(parent.get(i))); i = parent.get(i); } return i; };
+    const grid = new Map();
+    for (const i of chest) {
+      const m = p.markers[i]; const gx = Math.floor(m[2] / MERGE_R2), gy = Math.floor(m[3] / MERGE_R2);
+      for (let dx = -1; dx <= 1; dx++) for (let dy = -1; dy <= 1; dy++) {
+        for (const j of grid.get((gx + dx) + ',' + (gy + dy)) || []) {
+          const n = p.markers[j];
+          if (n[4] !== m[4]) continue;
+          const dd = Math.hypot(n[2] - m[2], n[3] - m[3]);
+          if (dd <= MERGE_R || (dd <= MERGE_R2 && m[5] >= 0 && m[5] === n[5])) parent.set(find(i), find(j));
+        }
+      }
+      const k = gx + ',' + gy; if (!grid.has(k)) grid.set(k, []); grid.get(k).push(i);
+    }
+    const groups = new Map();
+    for (const i of chest) { const r = find(i); if (!groups.has(r)) groups.set(r, []); groups.get(r).push(i); }
+    const units = []; const unitOf = new Map(); const inGroup = new Set();
+    for (const g of groups.values()) {
+      if (g.length < 2) continue;
+      g.sort((x, y) => rank(y) - rank(x));
+      const xs = g.map((i) => p.markers[i][2]), ys = g.map((i) => p.markers[i][3]);
+      const u = { key: 'g:' + p.markers[g[0]][0], idx: g, x: xs.reduce((a, b) => a + b) / g.length, y: ys.reduce((a, b) => a + b) / g.length };
+      units.push(u); for (const i of g) { inGroup.add(i); unitOf.set(p.markers[i][0], u); }
+    }
+    p.markers.forEach((m, i) => {
+      if (inGroup.has(i)) return;
+      const u = { key: m[0], idx: [i], x: m[2], y: m[3] }; units.push(u); unitOf.set(m[0], u);
+    });
+    p._units = units; p._unitOf = unitOf; state.units = units; state.unitOf = unitOf;
+  }
+
+  function groupIcon(lead, n, left) {
+    const key = 'g|' + state.packKey + '|' + lead[1] + '|' + n + '|' + left;
+    let ic = iconCache.get(key); if (ic) return ic;
+    const c = state.pack.cats[lead[1]];
+    const inner = c.i ? `<img src="${iconSrc(c.i)}" alt="">` : `<div class="dot" style="background:${c.c}"></div>`;
+    const badge = left ? `<span class="mkc">${left === n ? '×' + n : left + '/' + n}</span>` : '';
+    ic = L.divIcon({ className: '', html: `<div class="mk mkg${left ? '' : ' done'}">${inner}${badge}</div>`, iconSize: [30, 30], iconAnchor: [15, 15], popupAnchor: [0, -12] });
+    if (!c.i || iconSrc(c.i)) iconCache.set(key, ic);
+    return ic;
+  }
+
   // 마커 갱신: 전부 지웠다 다시 만들지 않고, 화면에 새로 들어온 것만 추가하고 벗어난 것만 뺀다.
   // (전부 다시 만들면 팝업이 열릴 때 지도가 살짝 움직이면서 팝업이 닫히고, 움직일 때마다 버벅인다)
   function renderMarkers(full) {
@@ -213,46 +265,98 @@
     if (full || state.lmPack !== p) {
       state.markerLayer.clearLayers(); state.lmarkers.clear(); state.lmPack = p;
     }
+    buildUnits();
     const vb = state.map.getBounds().pad(0.5);
     const S = vb.getSouth(), N = vb.getNorth(), W = vb.getWest(), E = vb.getEast();
-    const want = new Set();
-    const add = [];
-    p.markers.forEach((m, i) => {
-      const lat = state.H - m[3], lng = m[2];
-      if (!state.search && (lat < S || lat > N || lng < W || lng > E) && state.focusId !== m[0]) return;
-      if (!isVisible(m, i)) return;
-      want.add(m[0]);
-      const done = state.done.has(m[0]);
-      const old = state.lmarkers.get(m[0]);
-      if (old) {
-        if (old._done !== done) { old._done = done; old.setIcon(iconFor(m, done)); old.setZIndexOffset(done ? -500 : 0); }
-        return;
-      }
-      add.push([m, done]);
-    });
-    // 팝업이 열려 있는 마커는 화면 밖으로 나가도 남겨 둔다
-    for (const [id, lm] of state.lmarkers) {
-      if (want.has(id) || (lm.isPopupOpen && lm.isPopupOpen())) continue;
-      state.markerLayer.removeLayer(lm); state.lmarkers.delete(id);
+    const want = new Set(); const add = [];
+    for (const u of state.units) {
+      const lat = state.H - u.y, lng = u.x;
+      const out = lat < S || lat > N || lng < W || lng > E;
+      if (out && !state.search && !(state.focusId && u.idx.some((i) => p.markers[i][0] === state.focusId))) continue;
+      const vis = u.idx.filter((i) => isVisible(p.markers[i], i));
+      if (!vis.length) continue;
+      want.add(u.key);
+      const left = vis.filter((i) => !state.done.has(p.markers[i][0])).length;
+      const sig = vis.join(',') + '|' + left;
+      const old = state.lmarkers.get(u.key);
+      if (old) { if (old._sig !== sig) setUnitIcon(old, vis, left, sig); continue; }
+      add.push([u, vis, left, sig]);
     }
-    for (const [m, done] of add) {
-      const lm = L.marker(ll(m[2], m[3]), { icon: iconFor(m, done), zIndexOffset: done ? -500 : 0, keyboard: false, riseOnHover: false, bubblingMouseEvents: false });
-      lm._wm = m; lm._done = done;
+    // 팝업이 열려 있는 마커는 화면 밖으로 나가도 남겨 둔다
+    for (const [key, lm] of state.lmarkers) {
+      if (want.has(key) || (lm.isPopupOpen && lm.isPopupOpen())) continue;
+      state.markerLayer.removeLayer(lm); state.lmarkers.delete(key);
+    }
+    for (const [u, vis, left, sig] of add) {
+      const lm = L.marker(ll(u.x, u.y), { icon: L.divIcon({ className: '' }), keyboard: false, riseOnHover: false, bubblingMouseEvents: false });
+      lm._unit = u; setUnitIcon(lm, vis, left, sig);
       lm.on('click', onMarkerClickEv);
       state.markerLayer.addLayer(lm);
-      state.lmarkers.set(m[0], lm);
+      state.lmarkers.set(u.key, lm);
     }
     updateProgressPill();
     return want.size;
   }
+  function setUnitIcon(lm, vis, left, sig) {
+    const p = state.pack;
+    lm._vis = vis; lm._sig = sig; lm._wm = p.markers[vis[0]];
+    lm.setIcon(vis.length === 1 ? iconFor(lm._wm, left === 0) : groupIcon(lm._wm, vis.length, left));
+    lm.setZIndexOffset(left === 0 ? -500 : (vis.length > 1 ? 100 : 0));
+    if (lm.isPopupOpen && lm.isPopupOpen() && lm._popupSync) lm._popupSync();
+  }
   function onMarkerClickEv(e) { onMarkerClick(e.target); }
 
   function onMarkerClick(lm) {
-    const m = lm._wm;
-    if (state.opts.quick) { toggleDone(m[0]); return; }
-    lm.unbindPopup();
-    lm.bindPopup(popupEl(m), { maxWidth: 320, autoPanPaddingTopLeft: [10, 70] }).openPopup();
-    setHash(m[0]);
+    const p = state.pack; const ids = lm._vis.map((i) => p.markers[i][0]);
+    if (state.opts.quick) {
+      if (ids.length === 1) toggleDone(ids[0]);
+      else { const anyLeft = ids.some((id) => !state.done.has(id)); setDoneMany(ids, anyLeft); toast(anyLeft ? `${ids.length}개 획득 체크` : `${ids.length}개 체크 해제`); }
+      return;
+    }
+    openUnitPopup(lm);
+  }
+  function openUnitPopup(lm) {
+    const p = state.pack;
+    lm.unbindPopup(); lm._popupSync = null;
+    const el = lm._vis.length === 1 ? popupEl(lm._wm) : groupPopupEl(lm);
+    lm.bindPopup(el, { maxWidth: 320, autoPanPaddingTopLeft: [10, 70] }).openPopup();
+    setHash(p.markers[lm._vis[0]][0]);
+  }
+
+  function groupPopupEl(lm) {
+    const p = state.pack; const vis = lm._vis; const ms = vis.map((i) => p.markers[i]);
+    const lead = ms[0]; const lc = p.cats[lead[1]];
+    const floor = lead[4] !== '0' ? ((p.layers || []).find((l) => l.id === lead[4]) || {}).n : '';
+    const descs = [...new Set(ms.map((m) => descText(m[5])).filter(Boolean))];
+    const one = descs.length <= 1;
+    const el = document.createElement('div');
+    el.innerHTML = `
+      <div class="pp-head">${lc.i ? `<img src="${iconSrc(lc.i)}" alt="">` : ''}<div>
+        <div class="pp-title">보물상자 ${ms.length}개</div>
+        <div class="pp-sub">${one ? '한자리에서 한 번에 얻는 묶음' : '같은 자리에 겹쳐 있는 상자'}${floor ? ' · ' + esc(floor) : ''}</div></div></div>
+      <div class="pp-list">${ms.map((m, k) => {
+        const c = p.cats[m[1]];
+        return `<div class="pp-item"><button class="pp-chk" data-k="${k}"></button>${c.i ? `<img src="${iconSrc(c.i)}" alt="">` : ''}<span>${esc(c.n)}</span>${!one && descText(m[5]) ? `<div class="pp-idesc">${esc(descText(m[5]))}</div>` : ''}</div>`;
+      }).join('')}</div>
+      ${one && descs[0] ? `<div class="pp-desc">${esc(descs[0])}</div>` : ''}
+      <button class="pp-btn"></button>
+      <div class="pp-meta"><span>X ${lead[2]} · Y ${lead[3]}</span><a data-copy>링크 복사</a></div>`;
+    const ids = ms.map((m) => m[0]);
+    const btn = $('.pp-btn', el); const chks = $$('.pp-chk', el);
+    const sync = () => {
+      const left = ids.filter((id) => !state.done.has(id)).length;
+      btn.textContent = left ? (left === ids.length ? `전부 획득 체크 (${ids.length}개)` : `나머지 ${left}개 획득 체크`) : '✓ 전부 획득함 (누르면 해제)';
+      btn.classList.toggle('done', !left);
+      chks.forEach((b) => { const d = state.done.has(ids[+b.dataset.k]); b.textContent = d ? '✓' : ''; b.classList.toggle('done', d); });
+    };
+    sync(); lm._popupSync = sync;
+    btn.addEventListener('click', () => { setDoneMany(ids, ids.some((id) => !state.done.has(id))); sync(); });
+    chks.forEach((b) => b.addEventListener('click', () => { toggleDone(ids[+b.dataset.k]); sync(); }));
+    $('[data-copy]', el).addEventListener('click', () => {
+      const url = location.href.split('#')[0] + `#map=${encodeURIComponent(state.packId)}&m=${ids[0]}`;
+      (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(() => toast('링크를 복사했습니다'), () => toast(url));
+    });
+    return el;
   }
 
   function popupEl(m) {
@@ -287,28 +391,26 @@
     return el;
   }
 
+  function markDone(id, val) {
+    if (state.done.has(id) === val) return false;
+    if (val) state.done.add(id); else state.done.delete(id);
+    const p = state.pack; const m = p.markers.find((x) => x[0] === id);
+    if (m) { state.catDone[m[1]] += val ? 1 : -1; updateCatCount(m[1]); }
+    return true;
+  }
+  function afterDoneChange() {
+    saveDone(); touchMap(state.packKey);
+    renderMarkers();
+    if ($('#tab-progress').classList.contains('active')) renderProgressMap();
+  }
   function toggleDone(id) {
     const now = !state.done.has(id);
-    if (now) state.done.add(id); else state.done.delete(id);
-    saveDone(); touchMap(state.packKey);
-    const lm = state.lmarkers.get(id);
-    const p = state.pack;
-    const idx = p.markers.findIndex((m) => m[0] === id);
-    if (idx >= 0) {
-      const ci = p.markers[idx][1];
-      state.catDone[ci] += now ? 1 : -1;
-      updateCatCount(ci);
-    }
-    if (lm) {
-      if (now && state.opts.hideDone && state.focusId !== id) {
-        state.markerLayer.removeLayer(lm); state.lmarkers.delete(id);
-      } else {
-        lm._done = now; lm.setIcon(iconFor(lm._wm, now)); lm.setZIndexOffset(now ? -500 : 0);
-      }
-    }
-    updateProgressPill();
-    if ($('#tab-progress').classList.contains('active')) renderProgressMap();
+    markDone(id, now); afterDoneChange();
     if (state.opts.quick) toast(now ? '획득 체크' : '체크 해제');
+  }
+  function setDoneMany(ids, val) {
+    let ch = false; for (const id of ids) ch = markDone(id, val) || ch;
+    if (ch) afterDoneChange();
   }
 
   function updateProgressPill() {
@@ -516,8 +618,9 @@
     if (state.floor && m[4] !== state.floor) { state.floor = ''; $('#floorSelect').value = ''; applyFloor(); }
     state.map.setView(ll(m[2], m[3]), 1, { animate: false });
     renderMarkers();
-    const lm = state.lmarkers.get(markerId);
-    if (lm) { lm.unbindPopup(); lm.bindPopup(popupEl(m), { maxWidth: 320 }).openPopup(); setHash(m[0]); }
+    const u = state.unitOf && state.unitOf.get(markerId);
+    const lm = u && state.lmarkers.get(u.key);
+    if (lm) openUnitPopup(lm);
   }
 
   function bindUI() {

@@ -75,6 +75,17 @@ a { color: var(--accent2); }
 .pp-btn.done { background: #2a3442; color: var(--accent2); }
 .pp-meta { margin-top: 6px; font-size: 11px; color: var(--muted); display: flex; justify-content: space-between; gap: 6px; }
 .pp-meta a { cursor: pointer; }
+.mk .mkc {
+  position: absolute; left: 17px; top: -7px; min-width: 18px; height: 16px; padding: 0 4px; border-radius: 8px;
+  background: var(--accent); color: #1a1406; font-size: 11px; font-weight: 900; line-height: 16px; text-align: center;
+  box-shadow: 0 1px 3px #000a; white-space: nowrap;
+}
+.pp-list { margin: 8px 0 4px; display: flex; flex-direction: column; gap: 5px; }
+.pp-item { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 13px; }
+.pp-item img { width: 22px; height: 22px; }
+.pp-chk { width: 24px; height: 24px; border-radius: 7px; border: 1.5px solid var(--muted); background: transparent; color: var(--accent2); font-weight: 900; cursor: pointer; padding: 0; }
+.pp-chk.done { border-color: var(--accent2); background: #12332e; }
+.pp-idesc { flex-basis: 100%; margin-left: 30px; color: #c9d4df; font-size: 12px; line-height: 1.45; white-space: pre-wrap; max-height: 90px; overflow: auto; }
 
 /* panel */
 #panel {
@@ -161,4 +172,5 @@ button.small { padding: 3px 9px; font-size: 12px; color: var(--text); }
 #map.z-mid .mk { transform: scale(.75); }
 #map.z-far .mk { transform: scale(.55); }
 #map.z-far .mk.done::after, #map.z-mid .mk.done::after { display: none; }
+#map.z-far .mk .mkc { transform: scale(1.35); transform-origin: left bottom; }
 .region-label { font-size: 15px; color: #ffe7a8; }
