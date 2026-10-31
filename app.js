@@ -170,7 +170,14 @@
   }
 
   /* ---------- markers ---------- */
+  const iconCache = new Map();
   function iconFor(m, done) {
+    const key = state.packKey + '|' + m[1] + '|' + (done ? 1 : 0);
+    let ic = iconCache.get(key);
+    if (!ic) { ic = makeIcon(m, done); const c = state.pack.cats[m[1]]; if (!c.i || iconSrc(c.i)) iconCache.set(key, ic); }
+    return ic;
+  }
+  function makeIcon(m, done) {
     const c = state.pack.cats[m[1]];
     const inner = c.i ? `<img src="${iconSrc(c.i)}" alt="">` : `<div class="dot" style="background:${c.c}"></div>`;
     return L.divIcon({ className: '', html: `<div class="mk${done ? ' done' : ''}">${inner}</div>`, iconSize: [30, 30], iconAnchor: [15, 15], popupAnchor: [0, -12] });
@@ -199,29 +206,46 @@
     return state.visible.has(p.cats[m[1]].n);
   }
 
-  function renderMarkers() {
+  // 마커 갱신: 전부 지웠다 다시 만들지 않고, 화면에 새로 들어온 것만 추가하고 벗어난 것만 뺀다.
+  // (전부 다시 만들면 팝업이 열릴 때 지도가 살짝 움직이면서 팝업이 닫히고, 움직일 때마다 버벅인다)
+  function renderMarkers(full) {
     const p = state.pack;
-    state.markerLayer.clearLayers();
-    state.lmarkers.clear();
-    let shown = 0;
-    // 화면 근처 마커만 그린다 (지도 전체 마커를 다 만들면 휴대폰이 버티지 못함)
-    const vb = state.map.getBounds().pad(0.4);
+    if (full || state.lmPack !== p) {
+      state.markerLayer.clearLayers(); state.lmarkers.clear(); state.lmPack = p;
+    }
+    const vb = state.map.getBounds().pad(0.5);
     const S = vb.getSouth(), N = vb.getNorth(), W = vb.getWest(), E = vb.getEast();
+    const want = new Set();
+    const add = [];
     p.markers.forEach((m, i) => {
       const lat = state.H - m[3], lng = m[2];
       if (!state.search && (lat < S || lat > N || lng < W || lng > E) && state.focusId !== m[0]) return;
       if (!isVisible(m, i)) return;
+      want.add(m[0]);
       const done = state.done.has(m[0]);
-      const lm = L.marker(ll(m[2], m[3]), { icon: iconFor(m, done), zIndexOffset: done ? -500 : 0, keyboard: false, riseOnHover: true });
-      lm._wm = m;
-      lm.on('click', () => onMarkerClick(lm));
+      const old = state.lmarkers.get(m[0]);
+      if (old) {
+        if (old._done !== done) { old._done = done; old.setIcon(iconFor(m, done)); old.setZIndexOffset(done ? -500 : 0); }
+        return;
+      }
+      add.push([m, done]);
+    });
+    // 팝업이 열려 있는 마커는 화면 밖으로 나가도 남겨 둔다
+    for (const [id, lm] of state.lmarkers) {
+      if (want.has(id) || (lm.isPopupOpen && lm.isPopupOpen())) continue;
+      state.markerLayer.removeLayer(lm); state.lmarkers.delete(id);
+    }
+    for (const [m, done] of add) {
+      const lm = L.marker(ll(m[2], m[3]), { icon: iconFor(m, done), zIndexOffset: done ? -500 : 0, keyboard: false, riseOnHover: false, bubblingMouseEvents: false });
+      lm._wm = m; lm._done = done;
+      lm.on('click', onMarkerClickEv);
       state.markerLayer.addLayer(lm);
       state.lmarkers.set(m[0], lm);
-      shown++;
-    });
+    }
     updateProgressPill();
-    return shown;
+    return want.size;
   }
+  function onMarkerClickEv(e) { onMarkerClick(e.target); }
 
   function onMarkerClick(lm) {
     const m = lm._wm;
@@ -279,7 +303,7 @@
       if (now && state.opts.hideDone && state.focusId !== id) {
         state.markerLayer.removeLayer(lm); state.lmarkers.delete(id);
       } else {
-        lm.setIcon(iconFor(lm._wm, now)); lm.setZIndexOffset(now ? -500 : 0);
+        lm._done = now; lm.setIcon(iconFor(lm._wm, now)); lm.setZIndexOffset(now ? -500 : 0);
       }
     }
     updateProgressPill();
