@@ -555,7 +555,8 @@
     },
     async signIn(email, password) { this.save(this.withExpiry(await this.req('/auth/v1/token?grant_type=password', { method: 'POST', body: { email, password } }))); },
     async signUp(email, password) {
-      const j = await this.req('/auth/v1/signup', { method: 'POST', body: { email, password } });
+      const back = encodeURIComponent(location.href.split('#')[0].split('?')[0]);
+      const j = await this.req('/auth/v1/signup?redirect_to=' + back, { method: 'POST', body: { email, password } });
       if (j && j.access_token) { this.save(this.withExpiry(j)); return true; }
       return false; // email confirmation required
     },
@@ -599,11 +600,11 @@
       name: 'supabase',
       async init() { if (!SB.enabled || !SB.uid) return false; this.uid = SB.uid; return true; },
       async list() {
-        const rows = await SB.req('/rest/v1/progress?select=map_id,ids,t', { auth: true });
+        const rows = await SB.req('/rest/v1/wuwa_progress?select=map_id,ids,t', { auth: true });
         return (rows || []).map((r) => ({ mapId: r.map_id, ids: r.ids || [], t: Number(r.t) || 0 }));
       },
       async put(mapId, ids, t) {
-        await SB.req('/rest/v1/progress?on_conflict=user_id,map_id', { method: 'POST', auth: true, headers: { Prefer: 'resolution=merge-duplicates,return=minimal' }, body: { user_id: SB.uid, map_id: mapId, ids, t } });
+        await SB.req('/rest/v1/wuwa_progress?on_conflict=user_id,map_id', { method: 'POST', auth: true, headers: { Prefer: 'resolution=merge-duplicates,return=minimal' }, body: { user_id: SB.uid, map_id: mapId, ids, t } });
       },
       get label() { return `${SB.email} 계정으로 로그인한 모든 기기와 진행도가 맞춰집니다.`; },
     },

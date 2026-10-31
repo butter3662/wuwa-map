@@ -10,17 +10,15 @@ Supabase 계정으로 로그인하면 진행도가 계정에 저장되어 여러
 로컬 확인: `python3 -m http.server` 후 http://localhost:8000 (file:// 로 열면 동작하지 않는다)
 
 ## 2. 계정 연동(Supabase) 설정
-`config.js` 가 비어 있으면 로그인 기능은 꺼진 채로 동작한다(진행도는 브라우저에만 저장).
+MAGI(butter3662/MAGI)와 **같은 Supabase 프로젝트**를 쓴다(`config.js`에 주소·공개 키가 이미 들어 있다). MAGI 계정으로 그대로 로그인된다.
 
-1. https://supabase.com 에서 새 프로젝트를 만든다.
-2. **SQL Editor** 에 `supabase/schema.sql` 내용을 붙여넣고 Run → `progress` 테이블과 행 수준 보안(RLS) 정책이 만들어진다. 각 사용자는 자기 행만 읽고 쓸 수 있다.
-3. **Authentication → URL Configuration**
-   - Site URL: `https://butter3662.github.io/wuwa-map/`
-   - Redirect URLs 에도 같은 주소를 추가한다.
-4. (선택) 테스트 중 가입 확인 메일이 번거로우면 Authentication 의 Email 공급자 설정에서 *Confirm email* 을 끈다. 켜 두면 가입 후 메일의 링크를 눌러야 로그인된다.
-5. (선택) Google 로그인: Authentication → Providers → Google 을 켜고 Google Cloud 의 OAuth 클라이언트 ID/보안 비밀을 입력한다(승인된 리디렉션 URI 는 `https://<프로젝트>.supabase.co/auth/v1/callback`). 그 뒤 `config.js` 에서 `google: true`.
-6. **Project Settings → API (API Keys)** 에서 Project URL 과 `anon`(public) 키를 복사해 `config.js` 에 넣고 커밋한다.
-   - anon 키는 공개되어도 되는 키다(RLS 로 보호). `service_role` 키는 절대 넣지 않는다.
+처음 한 번만 할 일:
+1. Supabase 대시보드에서 MAGI 프로젝트(`ictjkqbbcaigdvlysdaw`)를 연다.
+2. **SQL Editor** 에 `supabase/schema.sql` 내용을 붙여넣고 Run → `wuwa_progress` 테이블과 행 수준 보안(RLS) 정책이 만들어진다. MAGI의 `magi_sessions` 테이블은 건드리지 않는다.
+3. (권장) **Authentication → URL Configuration → Redirect URLs** 에 `https://butter3662.github.io/wuwa-map/` 를 추가한다. 추가하지 않으면 이 사이트에서 가입할 때 받은 확인 메일 링크가 MAGI 주소로 열린다(인증 자체는 정상 처리되니 그 뒤 이 사이트에서 로그인하면 된다).
+4. (선택) Google 로그인을 켰다면 `config.js` 에서 `google: true`.
+
+`service_role`/secret 키는 절대 `config.js` 에 넣지 않는다. 지금 들어 있는 publishable 키는 공개용이다.
 
 ### 동기화 방식
 - 지도 1장당 한 행(`map_id`, 체크한 마커 id 배열 `ids`, 수정 시각 `t`)을 저장한다.
@@ -31,7 +29,7 @@ Supabase 계정으로 로그인하면 진행도가 계정에 저장되어 여러
 - `index.html`, `app.js`, `app.css`, `config.js`
 - `data/catalog.json`, `data/maps/*.json` : 지도별 카테고리·마커·설명(한국어)
 - `pk/*.webp` + `pk/index.json` : 지도 타일·아이콘을 묶은 파일과 위치 색인
-- `supabase/schema.sql` : Supabase 테이블·보안 정책
+- `supabase/schema.sql` : Supabase 테이블(`wuwa_progress`)·보안 정책
 
 ## 데이터 출처
 - 지도 타일·마커: 쿠로게임즈 공식 인터랙티브 지도를 비상업적으로 미러링한 Acceleratorer/wuwa-map 번들(2026-10-22 수집). `NOTICE-KURO-DATA.md` 참고. 게임 데이터·이미지의 권리는 KURO GAMES 에 있다.
