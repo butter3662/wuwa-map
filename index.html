@@ -51,9 +51,11 @@
   </section>
 
   <section id="tab-settings" class="tab">
+    <h3>계정 연동</h3>
+    <div id="accountBox"></div>
+    <p class="muted small" id="syncLine"></p>
     <h3>진행도 백업</h3>
     <p class="muted">체크한 내용은 이 브라우저에 저장됩니다. 기기를 바꿀 때는 내보내기/가져오기를 쓰세요.</p>
-    <p class="muted small" id="syncLine"></p>
     <div class="row wrap btnrow">
       <button id="btnExport">내보내기(JSON)</button>
       <label class="filebtn">가져오기<input id="fileImport" type="file" accept="application/json,.json"></label>
@@ -64,8 +66,8 @@
       지도 타일·마커 좌표: 쿠로게임즈 공식 인터랙티브 지도(kurobbs.com/mc/map)를 비상업적 용도로 미러링한
       <a href="https://github.com/Acceleratorer/wuwa-map" target="_blank" rel="noopener">Acceleratorer/wuwa-map</a>
       번들(2026-10-22 수집). 게임 데이터·이미지·아이콘의 권리는 KURO GAMES에 있습니다.<br>
-      한국어 이름: 게임 텍스트 데이터(<a href="https://github.com/Dimbreath/WutheringData" target="_blank" rel="noopener">Dimbreath/WutheringData</a>)의 중국어↔한국어 대응을 사용했고,
-      게임 데이터에 없는 이름·설명 일부는 비공식 번역입니다. 번역이 없는 설명은 원문과 번역 링크로 표시됩니다.
+      한국어 이름: 3.7 버전 게임 텍스트(<a href="https://github.com/Arikatsu/WutheringWaves_Data" target="_blank" rel="noopener">Arikatsu/WutheringWaves_Data</a>)의 중국어↔한국어 대응으로 공식 표기를 맞췄고,
+      게임 텍스트에 없는 일부 지도 메모만 비공식 번역입니다. 번역이 없는 설명은 원문과 번역 링크로 표시됩니다.
     </p>
     <p class="muted small" id="statsLine"></p>
   </section>
@@ -81,6 +83,7 @@
 <div id="toast" class="hidden"></div>
 
 <script src="vendor/leaflet/leaflet.js"></script>
+<script src="config.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

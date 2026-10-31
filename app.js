@@ -528,73 +528,216 @@
     if (window.innerWidth > 720) openPanel(true);
   }
 
-  /* ---------- optional cloud sync (only inside a Claude artifact with db+user) ---------- */
+  /* ---------- Supabase (minimal REST client: GoTrue auth + PostgREST) ---------- */
+  const CFG = Object.assign({ supabaseUrl: '', supabaseAnonKey: '' }, window.WUWA_CONFIG || {});
+  const SB = {
+    url: (CFG.supabaseUrl || '').replace(/\/+$/, ''), key: CFG.supabaseAnonKey || '',
+    session: LS.get('wuwa-ko:sb-session', null),
+    get enabled() { return !!(this.url && this.key); },
+    save(s) { this.session = s; LS.set('wuwa-ko:sb-session', s); renderAccount(); },
+    async req(path, { method = 'GET', body, auth = false, headers = {} } = {}) {
+      const h = Object.assign({ apikey: this.key, 'Content-Type': 'application/json' }, headers);
+      if (auth) { await this.fresh(); if (!this.session) throw new Error('로그인이 필요합니다'); h.Authorization = 'Bearer ' + this.session.access_token; }
+      const r = await fetch(this.url + path, { method, headers: h, body: body ? JSON.stringify(body) : undefined });
+      const txt = await r.text(); let j = null; try { j = txt ? JSON.parse(txt) : null; } catch { j = null; }
+      if (!r.ok) {
+        const msg = (j && (j.error_description || j.msg || j.message || j.error)) || ('HTTP ' + r.status);
+        const err = new Error(msg); err.status = r.status; throw err;
+      }
+      return j;
+    },
+    withExpiry(t) { return Object.assign({}, t, { expires_at: t.expires_at || Math.floor(Date.now() / 1000) + (t.expires_in || 3600) }); },
+    async fresh() {
+      const s = this.session; if (!s) return;
+      if (s.expires_at - 60 > Date.now() / 1000) return;
+      try { this.save(this.withExpiry(await this.req('/auth/v1/token?grant_type=refresh_token', { method: 'POST', body: { refresh_token: s.refresh_token } }))); }
+      catch (e) { if (e.status === 400 || e.status === 401) { this.save(null); toast('로그인이 만료되어 다시 로그인해야 합니다'); } throw e; }
+    },
+    async signIn(email, password) { this.save(this.withExpiry(await this.req('/auth/v1/token?grant_type=password', { method: 'POST', body: { email, password } }))); },
+    async signUp(email, password) {
+      const j = await this.req('/auth/v1/signup', { method: 'POST', body: { email, password } });
+      if (j && j.access_token) { this.save(this.withExpiry(j)); return true; }
+      return false; // email confirmation required
+    },
+    async signOut() { try { if (this.session) await this.req('/auth/v1/logout', { method: 'POST', auth: true }); } catch { /* ignore */ } this.save(null); },
+    oauth(provider) {
+      const back = location.href.split('#')[0];
+      location.href = `${this.url}/auth/v1/authorize?provider=${provider}&redirect_to=${encodeURIComponent(back)}`;
+    },
+    async handleRedirect() {
+      // implicit-flow return: #access_token=...&refresh_token=...  (or #error_description=...)
+      const h = new URLSearchParams(location.hash.slice(1));
+      if (h.get('error_description')) { toast('로그인 실패: ' + h.get('error_description')); history.replaceState(null, '', location.pathname + location.search); return; }
+      if (!h.get('access_token')) return;
+      const t = { access_token: h.get('access_token'), refresh_token: h.get('refresh_token'), expires_in: +h.get('expires_in') || 3600, expires_at: +h.get('expires_at') || 0 };
+      history.replaceState(null, '', location.pathname + location.search);
+      this.session = this.withExpiry(t);
+      try { const u = await this.req('/auth/v1/user', { auth: true }); this.save(Object.assign({}, this.session, { user: u })); }
+      catch (e) { this.save(null); toast('로그인 처리 실패: ' + e.message); }
+    },
+    get uid() { return this.session && this.session.user && this.session.user.id; },
+    get email() { return this.session && this.session.user && (this.session.user.email || this.session.user.id); },
+  };
+
+  /* ---------- sync engine: per-map documents {ids, t}; newer t wins, first link merges ---------- */
+  const Backends = {
+    claude: {
+      name: 'claude', col: null,
+      async init() {
+        if (!(window.claude && window.claude.use)) return false;
+        const [db, user] = await Promise.all([window.claude.use('db').catch(() => null), window.claude.use('user').catch(() => null)]);
+        if (!db || !user) return false;
+        const uid = await user.id().catch(() => null);
+        if (!uid) return false;
+        this.uid = uid; this.col = db.collection('data/users/' + uid); return true;
+      },
+      async list() { const snap = await this.col.get(); return snap.docs.filter((d) => d.id.startsWith('p-')).map((d) => Object.assign({ mapId: d.id.slice(2) }, d.data() || {})); },
+      async put(mapId, ids, t) { await this.col.doc('p-' + mapId).set({ ids, t }); },
+      label: '같은 Claude 계정으로 연 다른 기기와 진행도가 맞춰집니다.',
+    },
+    supabase: {
+      name: 'supabase',
+      async init() { if (!SB.enabled || !SB.uid) return false; this.uid = SB.uid; return true; },
+      async list() {
+        const rows = await SB.req('/rest/v1/progress?select=map_id,ids,t', { auth: true });
+        return (rows || []).map((r) => ({ mapId: r.map_id, ids: r.ids || [], t: Number(r.t) || 0 }));
+      },
+      async put(mapId, ids, t) {
+        await SB.req('/rest/v1/progress?on_conflict=user_id,map_id', { method: 'POST', auth: true, headers: { Prefer: 'resolution=merge-duplicates,return=minimal' }, body: { user_id: SB.uid, map_id: mapId, ids, t } });
+      },
+      get label() { return `${SB.email} 계정으로 로그인한 모든 기기와 진행도가 맞춰집니다.`; },
+    },
+  };
+
   const Sync = {
-    col: null, timers: new Map(), busy: new Map(),
+    be: null, timers: new Map(), busy: new Map(), pulling: false,
     async start() {
-      if (!(window.claude && window.claude.use)) return;
-      const [db, user] = await Promise.all([window.claude.use('db').catch(() => null), window.claude.use('user').catch(() => null)]);
-      if (!db || !user) return;
-      const uid = await user.id().catch(() => null);
-      if (!uid) return;
-      this.col = db.collection('data/users/' + uid);
-      setSyncLine('클라우드 동기화 연결 중…');
+      this.stop();
+      for (const b of [Backends.supabase, Backends.claude]) {
+        if (await b.init().catch(() => false)) { this.be = b; break; }
+      }
+      if (!this.be) { setSyncLine(SB.enabled ? '로그인하면 진행도가 계정에 저장되어 다른 기기와 맞춰집니다.' : ''); return; }
+      await this.pull(true);
+    },
+    stop() { for (const t of this.timers.values()) clearTimeout(t); this.timers.clear(); this.be = null; },
+    async pull(first) {
+      if (!this.be || this.pulling) return;
+      this.pulling = true; const be = this.be;
+      setSyncLine('동기화 중…');
       try {
-        const snap = await this.col.get();
-        let changed = 0;
-        for (const d of snap.docs) {
-          if (!d.id.startsWith('p-')) continue;
-          const mapId = d.id.slice(2); const body = d.data() || {};
-          if (!state.catalog.maps[mapId]) continue;
-          if ((body.t || 0) > (mtimes[mapId] || 0)) {
-            const p = await fetchPack(mapId); const remote = new Set(body.ids || []);
-            for (const m of p.markers) { const had = state.done.has(m[0]); const want = remote.has(m[0]); if (had !== want) { changed++; if (want) state.done.add(m[0]); else state.done.delete(m[0]); } }
-            mtimes[mapId] = body.t;
-          } else if ((mtimes[mapId] || 0) > (body.t || 0)) this.schedule(mapId, 10);
+        const docs = await be.list();
+        const mergedKey = 'wuwa-ko:merged-' + be.name + '-' + be.uid;
+        const merge = first && !LS.get(mergedKey, false);
+        let changed = 0; const seen = new Set();
+        for (const d of docs) {
+          if (!state.catalog.maps[d.mapId]) continue;
+          seen.add(d.mapId);
+          const rt = d.t || 0, lt = mtimes[d.mapId] || 0;
+          if (merge || rt > lt) {
+            const p = await fetchPack(d.mapId); const remote = new Set(d.ids || []);
+            for (const m of p.markers) {
+              const had = state.done.has(m[0]); const want = merge ? had || remote.has(m[0]) : remote.has(m[0]);
+              if (had !== want) { changed++; if (want) state.done.add(m[0]); else state.done.delete(m[0]); }
+            }
+            if (merge) { mtimes[d.mapId] = Date.now(); this.schedule(d.mapId, 50); } else mtimes[d.mapId] = rt;
+          } else if (lt > rt) this.schedule(d.mapId, 50);
         }
-        for (const mapId of Object.keys(mtimes)) if (!snap.docs.some((d) => d.id === 'p-' + mapId)) this.schedule(mapId, 10);
+        for (const mapId of Object.keys(mtimes)) if (!seen.has(mapId) && state.catalog.maps[mapId]) this.schedule(mapId, 50);
+        if (merge) LS.set(mergedKey, true);
         LS.set('wuwa-ko:mtimes', mtimes);
-        if (changed) { saveDone(); computeCounts(); renderCatList(); renderMarkers(); toast(`다른 기기의 진행도 ${changed}건을 반영했습니다`); }
-        setSyncLine('클라우드 동기화 켜짐: 같은 Claude 계정으로 연 다른 기기와 진행도가 맞춰집니다.');
-      } catch (e) { this.col = null; setSyncLine('클라우드 동기화를 쓸 수 없어 이 브라우저에만 저장합니다.'); }
+        if (changed) { saveDone(); computeCounts(); renderCatList(); renderMarkers(); if ($('#tab-progress').classList.contains('active')) renderProgressMap(); toast(`다른 기기의 진행도 ${changed}건을 반영했습니다`); }
+        setSyncLine('동기화 켜짐 · ' + be.label);
+      } catch (e) {
+        setSyncLine('동기화 실패: ' + (e.message || e.code || e) + ' (이 브라우저에는 계속 저장됩니다)');
+      } finally { this.pulling = false; }
     },
     schedule(mapId, delay = 1500) {
-      if (!this.col) return;
+      if (!this.be) return;
       clearTimeout(this.timers.get(mapId));
       this.timers.set(mapId, setTimeout(() => this.push(mapId), delay));
     },
     async push(mapId) {
-      if (!this.col) return;
+      const be = this.be; if (!be) return;
       if (this.busy.get(mapId)) { this.schedule(mapId); return; }
       this.busy.set(mapId, true);
       try {
         const p = await fetchPack(mapId);
         const ids = p.markers.filter((m) => state.done.has(m[0])).map((m) => m[0]);
-        await this.col.doc('p-' + mapId).set({ ids, t: mtimes[mapId] || Date.now() });
+        if (!mtimes[mapId]) { mtimes[mapId] = Date.now(); LS.set('wuwa-ko:mtimes', mtimes); }
+        await be.put(mapId, ids, mtimes[mapId]);
       } catch (e) {
-        if (e && e.code === 'unavailable') this.schedule(mapId, 4000 + Math.random() * 2000);
-        else if (e && (e.code === 'quota_exceeded' || e.code === 'invalid_argument')) toast('클라우드 저장 실패: ' + (e.message || e.code));
+        if ((e && e.code === 'unavailable') || (e && (e.status >= 500 || e.status === undefined && e.name === 'TypeError'))) this.schedule(mapId, 4000 + Math.random() * 2000);
+        else toast('클라우드 저장 실패: ' + (e.message || e.code || e));
       } finally { this.busy.set(mapId, false); }
     },
     async pushAll() {
       const now = Date.now();
-      for (const id of Object.keys(state.catalog.maps)) { mtimes[id] = now; }
+      for (const id of Object.keys(state.catalog.maps)) mtimes[id] = now;
       LS.set('wuwa-ko:mtimes', mtimes);
-      if (!this.col) return;
+      if (!this.be) return;
       for (const id of Object.keys(state.catalog.maps)) await this.push(id);
     },
   };
   function setSyncLine(t) { const el = $('#syncLine'); if (el) el.textContent = t; }
 
+  /* ---------- account UI ---------- */
+  function renderAccount() {
+    const box = $('#accountBox'); if (!box) return;
+    if (!SB.enabled) {
+      box.innerHTML = '<p class="muted small">이 사이트에는 아직 Supabase 설정(config.js)이 없어 계정 로그인이 꺼져 있습니다.</p>';
+      return;
+    }
+    if (SB.uid) {
+      box.innerHTML = `<p class="muted"><b>${esc(SB.email)}</b> 로 로그인됨</p>
+        <div class="row wrap btnrow"><button id="btnSyncNow">지금 동기화</button><button id="btnLogout">로그아웃</button></div>`;
+      $('#btnSyncNow').onclick = () => Sync.start();
+      $('#btnLogout').onclick = async () => { await SB.signOut(); await Sync.start(); toast('로그아웃했습니다 (체크 내용은 이 브라우저에 남아 있습니다)'); };
+      return;
+    }
+    box.innerHTML = `
+      <form id="loginForm" class="acct">
+        <input id="acEmail" type="email" placeholder="이메일" autocomplete="email" required>
+        <input id="acPw" type="password" placeholder="비밀번호 (6자 이상)" autocomplete="current-password" minlength="6" required>
+        <div class="row wrap btnrow">
+          <button type="submit" data-act="in">로그인</button>
+          <button type="submit" data-act="up">회원가입</button>
+          ${CFG.google ? '<button type="button" id="btnGoogle">Google로 로그인</button>' : ''}
+        </div>
+        <p class="muted small" id="acMsg"></p>
+      </form>`;
+    const form = $('#loginForm'); let act = 'in';
+    $$('button[type=submit]', form).forEach((b) => b.addEventListener('click', () => { act = b.dataset.act; }));
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = $('#acEmail').value.trim(), pw = $('#acPw').value; const msg = $('#acMsg');
+      msg.textContent = '처리 중…';
+      try {
+        if (act === 'up') {
+          const ok = await SB.signUp(email, pw);
+          if (!ok) { msg.textContent = '가입 확인 메일을 보냈습니다. 메일의 링크를 누른 뒤 로그인하세요.'; return; }
+        } else await SB.signIn(email, pw);
+        await Sync.start(); toast('로그인했습니다');
+      } catch (err) { msg.textContent = '실패: ' + koAuthError(err.message); }
+    });
+    const g = $('#btnGoogle'); if (g) g.onclick = () => SB.oauth('google');
+  }
+  function koAuthError(m) {
+    const map = { 'Invalid login credentials': '이메일 또는 비밀번호가 틀렸습니다', 'Email not confirmed': '가입 확인 메일의 링크를 먼저 눌러야 합니다', 'User already registered': '이미 가입된 이메일입니다' };
+    return map[m] || m;
+  }
+
   async function init() {
     bindUI();
     try {
+      if (SB.enabled) await SB.handleRedirect();
+      renderAccount();
       await Pack.init();
       const res = await fetch('data/catalog.json');
       state.catalog = await res.json();
       const h = parseHash();
       await loadMap(h.map || LS.get(K.last, null) || state.catalog.defaultMapId, h.m);
-      Sync.start();
+      await Sync.start();
+      document.addEventListener('visibilitychange', () => { if (!document.hidden && Sync.be) Sync.pull(false); });
     } catch (e) {
       $('#mapTitle').textContent = '불러오기 실패';
       toast(e.message || String(e));
