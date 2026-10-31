@@ -10,6 +10,13 @@
   const K = { done: 'wuwa-ko:done', vis: 'wuwa-ko:visible', last: 'wuwa-ko:lastMap', opts: 'wuwa-ko:opts' };
   const BLANK = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
   const isChest = (n) => /보물상자|조석의 유산/.test(n);
+  // 재화: 사운드박스, 정풍의 종, 천 겹의 꽃잎을 주는 꿈속 장치
+  const PETAL = /^꿈속 (여우 조각상|심월 인형|옥산장)$/;
+  const CURRENCY_NAMES = ['사운드박스', '사운드박스 · 라군나', '사운드박스 · 일곱 언덕', '정풍의 종', '꿈속 여우 조각상', '꿈속 심월 인형', '꿈속 옥산장'];
+  const isCurrency = (n) => /^사운드박스/.test(n) || n === '정풍의 종' || PETAL.test(n);
+  const isDefault = (n) => isChest(n) || isCurrency(n);
+  const rankCat = (n) => (isChest(n) ? 2 : isCurrency(n) ? 1 : 0);
+  const catLabel = (n) => (PETAL.test(n) ? `${n} (천 겹의 꽃잎)` : n);
   const norm = (s) => (s || '').toLowerCase().replace(/\s+/g, '');
 
   const state = {
@@ -33,6 +40,9 @@
   const mtimes = LS.get('wuwa-ko:mtimes', {});
   function touchMap(id) { mtimes[id] = Date.now(); LS.set('wuwa-ko:mtimes', mtimes); Sync.schedule(id); }
   const saveVis = () => LS.set(K.vis, [...state.visible]);
+  // 예전에 상자만 켜 두었던 사용자에게 재화 항목을 한 번 켜 준다
+  if (state.visibleInit && !LS.get('wuwa-ko:visCurrency', false)) { CURRENCY_NAMES.forEach((n) => state.visible.add(n)); saveVis(); }
+  LS.set('wuwa-ko:visCurrency', true);
   const saveOpts = () => LS.set(K.opts, state.opts);
   const ll = (x, y) => [state.H - y, x];
   const boundsLL = (b) => L.latLngBounds(ll(b.minX, b.maxY), ll(b.maxX, b.minY));
@@ -375,7 +385,7 @@
     }
     el.innerHTML = `
       <div class="pp-head">${c.i ? `<img src="${iconSrc(c.i)}" alt="">` : ''}<div>
-        <div class="pp-title">${esc(c.n)}</div>
+        <div class="pp-title">${esc(catLabel(c.n))}</div>
         <div class="pp-sub">${esc(grp)}${floor ? ' · ' + esc(floor) : ''}</div></div></div>
       ${desc ? `<div class="pp-desc">${desc}</div>` : ''}
       <button class="pp-btn"></button>
@@ -447,7 +457,7 @@
     for (const g of p.groups) {
       const cis = p.cats.map((c, i) => i).filter((i) => p.cats[i].g === g.id && state.catTotal[i] > 0);
       if (!cis.length) continue;
-      cis.sort((a, b) => (isChest(p.cats[b].n) - isChest(p.cats[a].n)) || p.cats[a].n.localeCompare(p.cats[b].n, 'ko'));
+      cis.sort((a, b) => (rankCat(p.cats[b].n) - rankCat(p.cats[a].n)) || p.cats[a].n.localeCompare(p.cats[b].n, 'ko'));
       const el = document.createElement('div');
       el.className = 'grp' + (openGroups.has(g.id) ? ' open' : '');
       el.innerHTML = `<div class="grp-head"><span class="arrow">▶</span><span class="name">${esc(g.n)}</span><span class="cnt"></span></div>
@@ -457,7 +467,7 @@
         const c = p.cats[i];
         const r = document.createElement('label');
         r.className = 'cat'; r.dataset.ci = i;
-        r.innerHTML = `<input type="checkbox" ${state.visible.has(c.n) ? 'checked' : ''}>${c.i ? `<img src="${iconSrc(c.i)}" alt="">` : `<span class="sw" style="background:${c.c}"></span>`}<span class="nm">${esc(c.n)}</span><span class="ct"></span>`;
+        r.innerHTML = `<input type="checkbox" ${state.visible.has(c.n) ? 'checked' : ''}>${c.i ? `<img src="${iconSrc(c.i)}" alt="">` : `<span class="sw" style="background:${c.c}"></span>`}<span class="nm">${esc(catLabel(c.n))}</span><span class="ct"></span>`;
         $('input', r).addEventListener('change', (e) => {
           if (e.target.checked) state.visible.add(c.n); else state.visible.delete(c.n);
           saveVis(); renderMarkers();
@@ -506,12 +516,16 @@
   }
   function renderProgressMap() {
     const p = state.pack; let html = '';
-    const rows = p.cats.map((c, i) => ({ c, i })).filter(({ c, i }) => c.g === 'collection' && state.catTotal[i] > 0);
-    rows.sort((a, b) => (isChest(b.c.n) - isChest(a.c.n)) || a.c.n.localeCompare(b.c.n, 'ko'));
-    let ct = 0, cd = 0;
-    for (const { c, i } of rows) if (isChest(c.n)) { ct += state.catTotal[i]; cd += state.catDone[i]; }
+    const rows = p.cats.map((c, i) => ({ c, i })).filter(({ c, i }) => (c.g === 'collection' || isCurrency(c.n)) && state.catTotal[i] > 0);
+    rows.sort((a, b) => (rankCat(b.c.n) - rankCat(a.c.n)) || a.c.n.localeCompare(b.c.n, 'ko'));
+    let ct = 0, cd = 0, rt = 0, rd = 0;
+    for (const { c, i } of rows) {
+      if (isChest(c.n)) { ct += state.catTotal[i]; cd += state.catDone[i]; }
+      else if (isCurrency(c.n)) { rt += state.catTotal[i]; rd += state.catDone[i]; }
+    }
     html += progRow('보물상자 + 조석의 유산 합계', cd, ct);
-    for (const { c, i } of rows) html += progRow(c.n, state.catDone[i], state.catTotal[i]);
+    if (rt) html += progRow('재화 합계 (사운드박스 · 정풍의 종 · 천 겹의 꽃잎)', rd, rt);
+    for (const { c, i } of rows) html += progRow(catLabel(c.n), state.catDone[i], state.catTotal[i]);
     $('#progMap').innerHTML = html || '<p class="muted">수집 항목이 없습니다.</p>';
   }
   async function calcAll() {
@@ -524,8 +538,8 @@
           const p = await fetchPack(id); const ai = state.catalog.maps[id].ai;
           for (const m of p.markers) {
             if (m[6] !== ai) continue;
-            const n = p.cats[m[1]].n; if (!isChest(n)) continue;
-            for (const tgt of [per, grand]) {
+            const n = p.cats[m[1]].n; if (!isDefault(n)) continue;
+            for (const tgt of (isChest(n) ? [per, grand] : [grand])) {
               const v = tgt.get(n) || [0, 0]; v[1]++; if (state.done.has(m[0])) v[0]++; tgt.set(n, v);
             }
           }
@@ -534,7 +548,7 @@
         html += progRow(g.n, d, t);
       }
       let gh = '';
-      for (const [n, v] of [...grand.entries()].sort()) gh += progRow(n, v[0], v[1]);
+      for (const [n, v] of [...grand.entries()].sort((a, b) => (rankCat(b[0]) - rankCat(a[0])) || a[0].localeCompare(b[0], 'ko'))) gh += progRow(catLabel(n), v[0], v[1]);
       box.innerHTML = '<p class="muted small">지역별 (보물상자 + 조석의 유산)</p>' + html + '<p class="muted small">종류별 전체</p>' + gh;
     } catch (e) { box.innerHTML = `<p class="muted">${esc(e.message)}</p>`; }
   }
@@ -575,7 +589,7 @@
     if (!same) {
       state.packKey = meta.pack; state.pack = p; state.floor = ''; state.searchIdx = null;
       if (!state.visibleInit) {
-        for (const c of p.cats) if (isChest(c.n)) state.visible.add(c.n);
+        for (const c of p.cats) if (isDefault(c.n)) state.visible.add(c.n);
         state.visibleInit = true; saveVis();
       }
       computeCounts();
@@ -678,7 +692,7 @@
     $('#selAll').addEventListener('click', () => { state.pack.cats.forEach((c, i) => { if (state.catTotal[i]) state.visible.add(c.n); }); saveVis(); syncCatChecks(); renderMarkers(); });
     $('#selNone').addEventListener('click', () => { state.pack.cats.forEach((c) => state.visible.delete(c.n)); saveVis(); syncCatChecks(); renderMarkers(); });
     $('#selChests').addEventListener('click', () => {
-      state.pack.cats.forEach((c) => { if (isChest(c.n)) state.visible.add(c.n); else state.visible.delete(c.n); });
+      state.pack.cats.forEach((c) => { if (isDefault(c.n)) state.visible.add(c.n); else state.visible.delete(c.n); });
       saveVis(); syncCatChecks(); renderMarkers();
     });
     $('#btnCalcAll').addEventListener('click', calcAll);
