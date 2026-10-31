@@ -209,7 +209,7 @@
     const S = vb.getSouth(), N = vb.getNorth(), W = vb.getWest(), E = vb.getEast();
     p.markers.forEach((m, i) => {
       const lat = state.H - m[3], lng = m[2];
-      if ((lat < S || lat > N || lng < W || lng > E) && state.focusId !== m[0]) return;
+      if (!state.search && (lat < S || lat > N || lng < W || lng > E) && state.focusId !== m[0]) return;
       if (!isVisible(m, i)) return;
       const done = state.done.has(m[0]);
       const lm = L.marker(ll(m[2], m[3]), { icon: iconFor(m, done), zIndexOffset: done ? -500 : 0, keyboard: false, riseOnHover: true });
@@ -513,7 +513,20 @@
 
     let st;
     $('#search').addEventListener('input', (e) => {
-      clearTimeout(st); st = setTimeout(() => { state.search = norm(e.target.value); state.focusId = null; renderMarkers(); }, 200);
+      clearTimeout(st); st = setTimeout(() => {
+        state.search = norm(e.target.value); state.focusId = null;
+        if (state.search) {
+          // 검색 결과가 있는 곳으로 화면 이동
+          if (!state.searchIdx) buildSearchIdx();
+          const pts = []; state.pack.markers.forEach((m, i) => { if (state.searchIdx[i].includes(state.search) && (!state.floor || m[4] === state.floor)) pts.push(ll(m[2], m[3])); });
+          $('#searchInfo').textContent = pts.length ? `검색 결과 ${pts.length}개` : '검색 결과 없음';
+          if (pts.length) {
+            const b = L.latLngBounds(pts);
+            if (!state.map.getBounds().intersects(b) || pts.length <= 50) state.map.fitBounds(b.pad(0.2), { maxZoom: 0 });
+          }
+        } else $('#searchInfo').textContent = '';
+        renderMarkers();
+      }, 250);
     });
     $('#floorSelect').addEventListener('change', (e) => {
       state.floor = e.target.value; state.focusId = null; applyFloor(); renderMarkers();
