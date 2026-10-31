@@ -88,7 +88,7 @@
     createTile(c, done) {
       const img = document.createElement('img');
       img.alt = ''; img.setAttribute('role', 'presentation');
-      const key = `${c.x},${c.y}`; const dir = this.options.dir;
+      const key = c.z === 0 ? `${c.x},${c.y}` : `${c.z}|${c.x},${c.y}`; const dir = this.options.dir;
       if (!Pack.has(dir, key)) { img.src = BLANK; setTimeout(() => done(null, img), 0); return img; }
       Pack.tile(dir, key).then((u) => {
         img.onload = () => { done(null, img); URL.revokeObjectURL(u); };
@@ -102,7 +102,7 @@
   /* ---------- map / tiles ---------- */
   function tileLayer(t, pane, className) {
     return new PackedLayer({
-      dir: tileDir(t.src), tileSize: t.tileSize, minNativeZoom: 0, maxNativeZoom: 0, minZoom: -3, maxZoom: 2,
+      dir: tileDir(t.src), tileSize: t.tileSize, minNativeZoom: -3, maxNativeZoom: 0, minZoom: -3, maxZoom: 2,
       noWrap: true, keepBuffer: 2, updateWhenZooming: false, pane, className,
     });
   }
