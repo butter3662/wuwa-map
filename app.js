@@ -782,6 +782,10 @@
   /* ---------- account UI ---------- */
   function renderAccount() {
     const box = $('#accountBox'); if (!box) return;
+    const note = $('#backupNote');
+    if (note) note.textContent = SB.uid
+      ? '로그인 중이라 체크 내용이 계정에 자동 저장되고 다른 기기와 맞춰집니다. 아래 파일 백업은 따로 보관하고 싶을 때만 쓰면 됩니다. (전체 초기화는 연동된 모든 기기에서 지워집니다)'
+      : '체크한 내용은 이 브라우저에만 저장됩니다. 다른 기기에서도 보려면 위에서 로그인하거나 내보내기/가져오기를 쓰세요.';
     if (!SB.enabled) {
       box.innerHTML = '<p class="muted small">이 사이트에는 아직 Supabase 설정(config.js)이 없어 계정 로그인이 꺼져 있습니다.</p>';
       return;
