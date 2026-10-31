@@ -1,0 +1,435 @@
+{
+ "groups": [
+  {
+   "id": "roya-frostlands",
+   "n": "로야 빙원",
+   "sections": [
+    {
+     "n": "어둠의 평원",
+     "maps": [
+      "wuwa-kuro-state-909",
+      "wuwa-kuro-atlas-roya-frostlands-909-7-7",
+      "wuwa-kuro-atlas-roya-frostlands-909-7-8",
+      "wuwa-kuro-atlas-roya-frostlands-909-7-9"
+     ]
+    },
+    {
+     "n": "빙원 지표면",
+     "maps": [
+      "wuwa-kuro-state-8-country-4",
+      "wuwa-kuro-atlas-roya-frostlands-8-6-2",
+      "wuwa-kuro-atlas-roya-frostlands-8-6-3",
+      "wuwa-kuro-atlas-roya-frostlands-8-6-4",
+      "wuwa-kuro-atlas-roya-frostlands-8-6-5"
+     ]
+    },
+    {
+     "n": "라하이 로이",
+     "maps": [
+      "wuwa-kuro-state-906",
+      "wuwa-kuro-atlas-roya-frostlands-906-5-7",
+      "wuwa-kuro-atlas-roya-frostlands-906-5-8",
+      "wuwa-kuro-atlas-roya-frostlands-906-5-9",
+      "wuwa-kuro-atlas-roya-frostlands-906-5-10",
+      "wuwa-kuro-atlas-roya-frostlands-906-5-11",
+      "wuwa-kuro-atlas-roya-frostlands-906-5-12",
+      "wuwa-kuro-atlas-roya-frostlands-906-5-13",
+      "wuwa-kuro-atlas-roya-frostlands-906-5-14"
+     ]
+    }
+   ],
+   "maps": [
+    "wuwa-kuro-state-909",
+    "wuwa-kuro-atlas-roya-frostlands-909-7-7",
+    "wuwa-kuro-atlas-roya-frostlands-909-7-8",
+    "wuwa-kuro-atlas-roya-frostlands-909-7-9",
+    "wuwa-kuro-state-8-country-4",
+    "wuwa-kuro-atlas-roya-frostlands-8-6-2",
+    "wuwa-kuro-atlas-roya-frostlands-8-6-3",
+    "wuwa-kuro-atlas-roya-frostlands-8-6-4",
+    "wuwa-kuro-atlas-roya-frostlands-8-6-5",
+    "wuwa-kuro-state-906",
+    "wuwa-kuro-atlas-roya-frostlands-906-5-7",
+    "wuwa-kuro-atlas-roya-frostlands-906-5-8",
+    "wuwa-kuro-atlas-roya-frostlands-906-5-9",
+    "wuwa-kuro-atlas-roya-frostlands-906-5-10",
+    "wuwa-kuro-atlas-roya-frostlands-906-5-11",
+    "wuwa-kuro-atlas-roya-frostlands-906-5-12",
+    "wuwa-kuro-atlas-roya-frostlands-906-5-13",
+    "wuwa-kuro-atlas-roya-frostlands-906-5-14"
+   ]
+  },
+  {
+   "id": "rinascita",
+   "n": "리나시타",
+   "sections": [
+    {
+     "n": "일곱 언덕",
+     "maps": [
+      "wuwa-kuro-atlas-rinascita-8-4-13",
+      "wuwa-kuro-atlas-rinascita-8-4-15"
+     ]
+    },
+    {
+     "n": "라군나",
+     "maps": [
+      "wuwa-kuro-state-8-country-3",
+      "wuwa-kuro-atlas-rinascita-8-3-2",
+      "wuwa-kuro-atlas-rinascita-8-3-3",
+      "wuwa-kuro-atlas-rinascita-8-3-4",
+      "wuwa-kuro-atlas-rinascita-8-3-5",
+      "wuwa-kuro-atlas-rinascita-8-3-6",
+      "wuwa-kuro-atlas-rinascita-8-3-7",
+      "wuwa-kuro-atlas-rinascita-8-3-8",
+      "wuwa-kuro-state-902",
+      "wuwa-kuro-atlas-rinascita-8-3-10",
+      "wuwa-kuro-state-903",
+      "wuwa-kuro-atlas-rinascita-8-3-12",
+      "wuwa-kuro-state-905"
+     ]
+    }
+   ],
+   "maps": [
+    "wuwa-kuro-atlas-rinascita-8-4-13",
+    "wuwa-kuro-atlas-rinascita-8-4-15",
+    "wuwa-kuro-state-8-country-3",
+    "wuwa-kuro-atlas-rinascita-8-3-2",
+    "wuwa-kuro-atlas-rinascita-8-3-3",
+    "wuwa-kuro-atlas-rinascita-8-3-4",
+    "wuwa-kuro-atlas-rinascita-8-3-5",
+    "wuwa-kuro-atlas-rinascita-8-3-6",
+    "wuwa-kuro-atlas-rinascita-8-3-7",
+    "wuwa-kuro-atlas-rinascita-8-3-8",
+    "wuwa-kuro-state-902",
+    "wuwa-kuro-atlas-rinascita-8-3-10",
+    "wuwa-kuro-state-903",
+    "wuwa-kuro-atlas-rinascita-8-3-12",
+    "wuwa-kuro-state-905"
+   ]
+  },
+  {
+   "id": "black-shores",
+   "n": "검은 해안",
+   "sections": [],
+   "maps": [
+    "wuwa-kuro-state-8-country-900",
+    "wuwa-kuro-state-900",
+    "wuwa-kuro-state-910"
+   ]
+  },
+  {
+   "id": "huanglong",
+   "n": "황룡",
+   "sections": [
+    {
+     "n": "몽주 · 현방 지계",
+     "maps": [
+      "wuwa-kuro-state-8-country-1-2",
+      "wuwa-kuro-atlas-huanglong-8-8-13",
+      "wuwa-kuro-atlas-huanglong-8-8-14",
+      "wuwa-kuro-atlas-huanglong-8-8-15",
+      "wuwa-kuro-atlas-huanglong-912-8-16"
+     ]
+    },
+    {
+     "n": "금주성",
+     "maps": [
+      "wuwa-kuro-atlas-huanglong-8-1-1",
+      "wuwa-kuro-state-8-country-1",
+      "wuwa-kuro-atlas-huanglong-8-1-3",
+      "wuwa-kuro-atlas-huanglong-8-1-4",
+      "wuwa-kuro-atlas-huanglong-8-1-5",
+      "wuwa-kuro-atlas-huanglong-8-1-6",
+      "wuwa-kuro-atlas-huanglong-8-1-7",
+      "wuwa-kuro-atlas-huanglong-8-1-8",
+      "wuwa-kuro-atlas-huanglong-8-1-9",
+      "wuwa-kuro-atlas-huanglong-8-1-10",
+      "wuwa-kuro-atlas-huanglong-8-1-11"
+     ]
+    }
+   ],
+   "maps": [
+    "wuwa-kuro-state-8-country-1-2",
+    "wuwa-kuro-atlas-huanglong-8-8-13",
+    "wuwa-kuro-atlas-huanglong-8-8-14",
+    "wuwa-kuro-atlas-huanglong-8-8-15",
+    "wuwa-kuro-atlas-huanglong-912-8-16",
+    "wuwa-kuro-atlas-huanglong-8-1-1",
+    "wuwa-kuro-state-8-country-1",
+    "wuwa-kuro-atlas-huanglong-8-1-3",
+    "wuwa-kuro-atlas-huanglong-8-1-4",
+    "wuwa-kuro-atlas-huanglong-8-1-5",
+    "wuwa-kuro-atlas-huanglong-8-1-6",
+    "wuwa-kuro-atlas-huanglong-8-1-7",
+    "wuwa-kuro-atlas-huanglong-8-1-8",
+    "wuwa-kuro-atlas-huanglong-8-1-9",
+    "wuwa-kuro-atlas-huanglong-8-1-10",
+    "wuwa-kuro-atlas-huanglong-8-1-11"
+   ]
+  }
+ ],
+ "maps": {
+  "wuwa-kuro-state-906": {
+   "title": "에칭 평원",
+   "file": "data/maps/state-906.json",
+   "count": 394
+  },
+  "wuwa-kuro-state-8-country-4": {
+   "title": "빙원 운송 항구",
+   "file": "data/maps/state-8-country-4.json",
+   "count": 91
+  },
+  "wuwa-kuro-atlas-roya-frostlands-8-6-2": {
+   "title": "기알라르 산",
+   "file": "data/maps/atlas-roya-frostlands-8-6-2.json",
+   "count": 135
+  },
+  "wuwa-kuro-atlas-roya-frostlands-8-6-3": {
+   "title": "눈먼 추락지",
+   "file": "data/maps/atlas-roya-frostlands-8-6-3.json",
+   "count": 159
+  },
+  "wuwa-kuro-atlas-roya-frostlands-8-6-4": {
+   "title": "옛 밀림 유적지",
+   "file": "data/maps/atlas-roya-frostlands-8-6-4.json",
+   "count": 430
+  },
+  "wuwa-kuro-atlas-roya-frostlands-8-6-5": {
+   "title": "타이드로스트 숲",
+   "file": "data/maps/atlas-roya-frostlands-8-6-5.json",
+   "count": 345
+  },
+  "wuwa-kuro-state-909": {
+   "title": "석양의 섬",
+   "file": "data/maps/state-909.json",
+   "count": 161
+  },
+  "wuwa-kuro-atlas-roya-frostlands-906-5-7": {
+   "title": "스타토치 아카데미",
+   "file": "data/maps/atlas-roya-frostlands-906-5-7.json",
+   "count": 470
+  },
+  "wuwa-kuro-atlas-roya-frostlands-909-7-7": {
+   "title": "봉인된 땅",
+   "file": "data/maps/atlas-roya-frostlands-909-7-7.json",
+   "count": 201
+  },
+  "wuwa-kuro-atlas-roya-frostlands-906-5-8": {
+   "title": "연동 중추",
+   "file": "data/maps/atlas-roya-frostlands-906-5-8.json",
+   "count": 37
+  },
+  "wuwa-kuro-atlas-roya-frostlands-909-7-8": {
+   "title": "적막의 절벽",
+   "file": "data/maps/atlas-roya-frostlands-909-7-8.json",
+   "count": 143
+  },
+  "wuwa-kuro-atlas-roya-frostlands-906-5-9": {
+   "title": "팡스파이어 골짜기",
+   "file": "data/maps/atlas-roya-frostlands-906-5-9.json",
+   "count": 448
+  },
+  "wuwa-kuro-atlas-roya-frostlands-909-7-9": {
+   "title": "영원한 어둠의 평원",
+   "file": "data/maps/atlas-roya-frostlands-909-7-9.json",
+   "count": 197
+  },
+  "wuwa-kuro-atlas-roya-frostlands-906-5-10": {
+   "title": "비야토르 숲",
+   "file": "data/maps/atlas-roya-frostlands-906-5-10.json",
+   "count": 280
+  },
+  "wuwa-kuro-atlas-roya-frostlands-906-5-11": {
+   "title": "스테그넌트 런",
+   "file": "data/maps/atlas-roya-frostlands-906-5-11.json",
+   "count": 250
+  },
+  "wuwa-kuro-atlas-roya-frostlands-906-5-12": {
+   "title": "리버스 고원",
+   "file": "data/maps/atlas-roya-frostlands-906-5-12.json",
+   "count": 204
+  },
+  "wuwa-kuro-atlas-roya-frostlands-906-5-13": {
+   "title": "모버로우 사막",
+   "file": "data/maps/atlas-roya-frostlands-906-5-13.json",
+   "count": 113
+  },
+  "wuwa-kuro-atlas-roya-frostlands-906-5-14": {
+   "title": "자이언트 게이즈 · 평야",
+   "file": "data/maps/atlas-roya-frostlands-906-5-14.json",
+   "count": 335
+  },
+  "wuwa-kuro-state-8-country-3": {
+   "title": "라군나 성",
+   "file": "data/maps/state-8-country-3.json",
+   "count": 119
+  },
+  "wuwa-kuro-atlas-rinascita-8-3-2": {
+   "title": "아베라르도 금고",
+   "file": "data/maps/atlas-rinascita-8-3-2.json",
+   "count": 893
+  },
+  "wuwa-kuro-atlas-rinascita-8-3-3": {
+   "title": "탄식 무덤의 섬",
+   "file": "data/maps/atlas-rinascita-8-3-3.json",
+   "count": 470
+  },
+  "wuwa-kuro-atlas-rinascita-8-3-4": {
+   "title": "애도 성역",
+   "file": "data/maps/atlas-rinascita-8-3-4.json",
+   "count": 571
+  },
+  "wuwa-kuro-atlas-rinascita-8-3-5": {
+   "title": "바람 부는 물가",
+   "file": "data/maps/atlas-rinascita-8-3-5.json",
+   "count": 511
+  },
+  "wuwa-kuro-atlas-rinascita-8-3-6": {
+   "title": "물의 경지",
+   "file": "data/maps/atlas-rinascita-8-3-6.json",
+   "count": 647
+  },
+  "wuwa-kuro-atlas-rinascita-8-3-7": {
+   "title": "미슬토 반도",
+   "file": "data/maps/atlas-rinascita-8-3-7.json",
+   "count": 587
+  },
+  "wuwa-kuro-atlas-rinascita-8-3-8": {
+   "title": "테살레오 해저 산맥",
+   "file": "data/maps/atlas-rinascita-8-3-8.json",
+   "count": 665
+  },
+  "wuwa-kuro-state-902": {
+   "title": "금고 아래층",
+   "file": "data/maps/state-902.json",
+   "count": 231
+  },
+  "wuwa-kuro-atlas-rinascita-8-3-10": {
+   "title": "리졸리 군도",
+   "file": "data/maps/atlas-rinascita-8-3-10.json",
+   "count": 336
+  },
+  "wuwa-kuro-state-903": {
+   "title": "아비놀륨",
+   "file": "data/maps/state-903.json",
+   "count": 454
+  },
+  "wuwa-kuro-atlas-rinascita-8-3-12": {
+   "title": "베오 해역",
+   "file": "data/maps/atlas-rinascita-8-3-12.json",
+   "count": 811
+  },
+  "wuwa-kuro-atlas-rinascita-8-4-13": {
+   "title": "일곱 언덕",
+   "file": "data/maps/atlas-rinascita-8-4-13.json",
+   "count": 888
+  },
+  "wuwa-kuro-state-905": {
+   "title": "깊은 바다 실험장",
+   "file": "data/maps/state-905.json",
+   "count": 236
+  },
+  "wuwa-kuro-atlas-rinascita-8-4-15": {
+   "title": "상귀스 사냥 평원",
+   "file": "data/maps/atlas-rinascita-8-4-15.json",
+   "count": 455
+  },
+  "wuwa-kuro-state-8-country-900": {
+   "title": "검은 해안 군도",
+   "file": "data/maps/state-8-country-900.json",
+   "count": 352
+  },
+  "wuwa-kuro-state-900": {
+   "title": "테티스 지하",
+   "file": "data/maps/state-900.json",
+   "count": 415
+  },
+  "wuwa-kuro-state-910": {
+   "title": "시간의 폐허",
+   "file": "data/maps/state-910.json",
+   "count": 59
+  },
+  "wuwa-kuro-atlas-huanglong-8-1-1": {
+   "title": "운릉 협곡",
+   "file": "data/maps/atlas-huanglong-8-1-1.json",
+   "count": 683
+  },
+  "wuwa-kuro-state-8-country-1": {
+   "title": "금주성",
+   "file": "data/maps/state-8-country-1.json",
+   "count": 669
+  },
+  "wuwa-kuro-atlas-huanglong-8-1-3": {
+   "title": "중부 평원",
+   "file": "data/maps/atlas-huanglong-8-1-3.json",
+   "count": 777
+  },
+  "wuwa-kuro-atlas-huanglong-8-1-4": {
+   "title": "잡석 고지",
+   "file": "data/maps/atlas-huanglong-8-1-4.json",
+   "count": 986
+  },
+  "wuwa-kuro-atlas-huanglong-8-1-5": {
+   "title": "호환 산맥",
+   "file": "data/maps/atlas-huanglong-8-1-5.json",
+   "count": 747
+  },
+  "wuwa-kuro-atlas-huanglong-8-1-6": {
+   "title": "울음새 늪",
+   "file": "data/maps/atlas-huanglong-8-1-6.json",
+   "count": 993
+  },
+  "wuwa-kuro-atlas-huanglong-8-1-7": {
+   "title": "암흑 밀림",
+   "file": "data/maps/atlas-huanglong-8-1-7.json",
+   "count": 1113
+  },
+  "wuwa-kuro-atlas-huanglong-8-1-8": {
+   "title": "귀허항시",
+   "file": "data/maps/atlas-huanglong-8-1-8.json",
+   "count": 736
+  },
+  "wuwa-kuro-atlas-huanglong-8-1-9": {
+   "title": "어둠의 만",
+   "file": "data/maps/atlas-huanglong-8-1-9.json",
+   "count": 207
+  },
+  "wuwa-kuro-atlas-huanglong-8-1-10": {
+   "title": "북락 광야",
+   "file": "data/maps/atlas-huanglong-8-1-10.json",
+   "count": 888
+  },
+  "wuwa-kuro-atlas-huanglong-8-1-11": {
+   "title": "승소산",
+   "file": "data/maps/atlas-huanglong-8-1-11.json",
+   "count": 1436
+  },
+  "wuwa-kuro-state-8-country-1-2": {
+   "title": "현방성",
+   "file": "data/maps/state-8-country-1-2.json",
+   "count": 160
+  },
+  "wuwa-kuro-atlas-huanglong-8-8-13": {
+   "title": "방경서봉",
+   "file": "data/maps/atlas-huanglong-8-8-13.json",
+   "count": 280
+  },
+  "wuwa-kuro-atlas-huanglong-8-8-14": {
+   "title": "낙연남구",
+   "file": "data/maps/atlas-huanglong-8-8-14.json",
+   "count": 600
+  },
+  "wuwa-kuro-atlas-huanglong-8-8-15": {
+   "title": "현유동악",
+   "file": "data/maps/atlas-huanglong-8-8-15.json",
+   "count": 446
+  },
+  "wuwa-kuro-atlas-huanglong-912-8-16": {
+   "title": "몽추천라",
+   "file": "data/maps/atlas-huanglong-912-8-16.json",
+   "count": 276
+  }
+ },
+ "defaultMapId": "wuwa-kuro-state-906",
+ "retrieved": "2026-10-22"
+}
