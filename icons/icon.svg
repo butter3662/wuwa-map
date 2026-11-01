@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="38%" r="75%">
+      <stop offset="0" stop-color="#1d2a3d"/>
+      <stop offset="1" stop-color="#0b0f16"/>
+    </radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f6dc95"/>
+      <stop offset="1" stop-color="#d9a744"/>
+    </linearGradient>
+    <linearGradient id="lid" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2b3a52"/>
+      <stop offset="1" stop-color="#1a2536"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" fill="url(#bg)"/>
+  <!-- 지도 등고선 -->
+  <g fill="none" stroke="#5fd4c4" stroke-opacity=".12" stroke-width="5">
+    <path d="M-20 360 C 80 300, 160 420, 260 370 S 440 300, 540 350"/>
+    <path d="M-20 420 C 90 370, 170 480, 270 430 S 450 370, 540 410"/>
+    <path d="M-20 130 C 70 90, 150 170, 250 120 S 430 60, 540 110"/>
+    <path d="M-20 70 C 90 30, 170 110, 270 60 S 450 0, 540 50"/>
+  </g>
+  <!-- 핀 -->
+  <path d="M256 70 C 160 70 92 140 92 230 C 92 330 200 400 244 452 a16 16 0 0 0 24 0 C 312 400 420 330 420 230 C 420 140 352 70 256 70 Z"
+        fill="url(#gold)" stroke="#8a6420" stroke-width="6"/>
+  <!-- 보물상자 -->
+  <g transform="translate(256 232)">
+    <path d="M-92 -18 C -92 -66 -60 -84 0 -84 C 60 -84 92 -66 92 -18 Z" fill="url(#lid)" stroke="#0e141d" stroke-width="7" stroke-linejoin="round"/>
+    <rect x="-92" y="-18" width="184" height="96" rx="10" fill="url(#lid)" stroke="#0e141d" stroke-width="7"/>
+    <rect x="-92" y="-24" width="184" height="16" fill="#e8c26a" stroke="#0e141d" stroke-width="6"/>
+    <rect x="-14" y="-84" width="28" height="162" fill="#e8c26a" stroke="#0e141d" stroke-width="6"/>
+    <rect x="-24" y="-18" width="48" height="44" rx="9" fill="#f6dc95" stroke="#0e141d" stroke-width="6"/>
+    <circle cx="0" cy="0" r="7" fill="#0e141d"/>
+  </g>
+  <!-- 체크 배지 -->
+  <circle cx="372" cy="356" r="58" fill="#5fd4c4" stroke="#0b0f16" stroke-width="10"/>
+  <path d="M344 357 l20 21 l38 -42" fill="none" stroke="#062b26" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
