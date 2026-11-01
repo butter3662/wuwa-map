@@ -8,6 +8,8 @@
   --accent2: #5fd4c4;
   --danger: #ef6b6b;
   --top: 52px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --top-h: calc(var(--top) + var(--safe-top)); /* 상단바 실제 높이 (홈 화면 앱에서 상태 표시줄 영역 포함) */
   font-family: "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
 }
 * { box-sizing: border-box; }
@@ -16,10 +18,10 @@ button, input, select { font: inherit; color: inherit; }
 a { color: var(--accent2); }
 
 #topbar {
-  position: fixed; inset: 0 0 auto 0; height: var(--top); z-index: 1000;
-  display: flex; align-items: center; gap: 8px; padding: 0 10px;
-  padding-top: env(safe-area-inset-top);
-  background: linear-gradient(#0d1117, #0d1117e6); border-bottom: 1px solid var(--line);
+  position: fixed; inset: 0 0 auto 0; height: var(--top-h); z-index: 1000;
+  display: flex; align-items: center; gap: 8px;
+  padding: var(--safe-top) max(10px, env(safe-area-inset-right)) 0 max(10px, env(safe-area-inset-left));
+  background: #0d1117; border-bottom: 1px solid var(--line);
 }
 .iconbtn {
   width: 38px; height: 38px; border-radius: 10px; border: 1px solid var(--line);
@@ -35,7 +37,7 @@ a { color: var(--accent2); }
 .caret { color: var(--muted); }
 .pill { font-size: 12px; padding: 4px 8px; border-radius: 99px; background: #1b2330; border: 1px solid var(--line); color: var(--accent); white-space: nowrap; }
 
-#map { position: fixed; inset: var(--top) 0 0 0; background: #0a0e13; }
+#map { position: fixed; inset: var(--top-h) 0 0 0; z-index: 0; background: #0a0e13; }
 .leaflet-container { background: #0a0e13; font-family: inherit; }
 /* hide sub-pixel seams between tiles at fractional zoom */
 .leaflet-container .base-tiles img.leaflet-tile, .leaflet-container .floor-tiles img.leaflet-tile {
@@ -89,7 +91,7 @@ a { color: var(--accent2); }
 
 /* panel */
 #panel {
-  position: fixed; z-index: 1100; top: var(--top); left: 0; bottom: 0; width: 360px; max-width: 100vw;
+  position: fixed; z-index: 1100; top: var(--top-h); left: 0; bottom: 0; width: 360px; max-width: 100vw;
   background: var(--panel); backdrop-filter: blur(6px); border-right: 1px solid var(--line);
   display: flex; flex-direction: column; transition: transform .2s ease;
 }

@@ -41,8 +41,9 @@
   function touchMap(id) { mtimes[id] = Date.now(); LS.set('wuwa-ko:mtimes', mtimes); Sync.schedule(id); }
   const saveVis = () => LS.set(K.vis, [...state.visible]);
   // 예전에 상자만 켜 두었던 사용자에게 재화 항목을 한 번 켜 준다
-  if (state.visibleInit && !LS.get('wuwa-ko:visCurrency', false)) { CURRENCY_NAMES.forEach((n) => state.visible.add(n)); saveVis(); }
-  LS.set('wuwa-ko:visCurrency', true);
+  const DEFAULT_NAMES = ['소박한 보물상자', '평범한 보물상자', '정밀한 보물상자', '찬란한 보물상자', '조석의 유산 · 초록', '조석의 유산 · 보라', '조석의 유산 · 금', ...CURRENCY_NAMES];
+  if (state.visibleInit && !LS.get('wuwa-ko:visCurrency2', false)) { CURRENCY_NAMES.forEach((n) => state.visible.add(n)); saveVis(); }
+  LS.set('wuwa-ko:visCurrency2', true);
   const saveOpts = () => LS.set(K.opts, state.opts);
   const ll = (x, y) => [state.H - y, x];
   const boundsLL = (b) => L.latLngBounds(ll(b.minX, b.maxY), ll(b.maxX, b.minY));
@@ -590,6 +591,7 @@
       state.packKey = meta.pack; state.pack = p; state.floor = ''; state.searchIdx = null;
       if (!state.visibleInit) {
         for (const c of p.cats) if (isDefault(c.n)) state.visible.add(c.n);
+        DEFAULT_NAMES.forEach((n) => state.visible.add(n)); // 처음 연 지도에 없는 종류도 다른 지도에서 보이도록
         state.visibleInit = true; saveVis();
       }
       computeCounts();
