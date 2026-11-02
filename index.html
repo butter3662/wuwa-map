@@ -14,9 +14,11 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="theme-color" content="#0d1117">
 <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
-<link rel="stylesheet" href="app.css?v=202611021333">
+<script>if(navigator.standalone||matchMedia("(display-mode: standalone)").matches)document.documentElement.classList.add("standalone");</script>
+<link rel="stylesheet" href="app.css?v=202611022252">
 </head>
 <body>
+<div id="edgeBand" aria-hidden="true"></div>
 <header id="topbar">
   <button id="btnPanel" class="iconbtn" aria-label="필터 열기">☰</button>
   <button id="btnMapPicker" class="mapname"><span id="mapTitle">불러오는 중…</span><span class="caret">▾</span></button>
@@ -93,7 +95,7 @@
 <div id="toast" class="hidden"></div>
 
 <script src="vendor/leaflet/leaflet.js"></script>
-<script src="config.js?v=202611021333"></script>
-<script src="app.js?v=202611021333"></script>
+<script src="config.js?v=202611022252"></script>
+<script src="app.js?v=202611022252"></script>
 </body>
 </html>
