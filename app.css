@@ -14,7 +14,11 @@
   font-family: "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
 }
 * { box-sizing: border-box; }
-html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text); overflow: hidden; }
+html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text); overflow: hidden; overscroll-behavior: none; }
+/* 문서 자체가 밀리지 않게 고정 (iOS에서 화면과 터치 위치가 어긋나는 문제 방지) */
+body { position: fixed; inset: 0; width: 100%; }
+/* 입력칸 16px 미만이면 iOS가 포커스 시 확대해 화면이 밀림 */
+input, select, textarea { font-size: 16px; }
 button, input, select { font: inherit; color: inherit; }
 a { color: var(--accent2); }
 

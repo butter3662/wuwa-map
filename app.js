@@ -966,5 +966,27 @@
       console.error(e);
     }
   }
+  // iOS 26: 키보드가 닫힌 뒤 화면(시각 뷰포트)이 원위치로 안 돌아와서
+  // 보이는 위치와 실제 터치 판정 위치가 어긋나는 문제를 되돌린다.
+  function resetViewport() {
+    if (window.scrollX || window.scrollY) window.scrollTo(0, 0);
+    const se = document.scrollingElement;
+    if (se && (se.scrollTop || se.scrollLeft)) { se.scrollTop = 0; se.scrollLeft = 0; }
+    if (document.body.scrollTop) document.body.scrollTop = 0;
+  }
+  const settle = () => { resetViewport(); setTimeout(resetViewport, 120); setTimeout(resetViewport, 400); };
+  window.addEventListener('scroll', resetViewport, { passive: true });
+  document.addEventListener('focusout', (e) => {
+    if (/^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName)) settle();
+  });
+  if (window.visualViewport) {
+    visualViewport.addEventListener('resize', () => {
+      if (!/^(INPUT|SELECT|TEXTAREA)$/.test(document.activeElement && document.activeElement.tagName)) settle();
+    });
+  }
+  window.addEventListener('orientationchange', settle);
+  window.addEventListener('pageshow', settle);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) settle(); });
+
   init();
 })();
