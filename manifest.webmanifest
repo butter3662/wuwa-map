@@ -1,6 +1,6 @@
 {
-  "name": "명조 지도 · 장치/보물상자 체크",
-  "short_name": "명조 지도",
+  "name": "명조 맵스",
+  "short_name": "명조 맵스",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

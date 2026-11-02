@@ -610,7 +610,7 @@
     if (focusMarker) focus(focusMarker);
   }
 
-  function setTitle(t) { $('#mapTitle').textContent = t; document.title = `${t} · 명조 지도`; }
+  function setTitle(t) { $('#mapTitle').textContent = t; document.title = '명조 맵스'; }
 
   // 지도를 움직이면 화면 가운데가 속한 세부 지역 이름으로 제목을 바꾼다
   function trackRegion() {
